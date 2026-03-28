@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>التقييم النفسي الذكي | منصة صفحة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .assessment-page { padding:60px 0 80px; background:var(--bg-light); min-height:calc(100vh - 72px); }
+    .assessment-container { max-width:760px; margin:0 auto; }
+    .assessment-intro { text-align:center; background:white; border-radius:var(--radius-lg); padding:48px; border:1px solid var(--border); box-shadow:var(--shadow-sm); }
+    .features-pills { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin:24px 0; }
+    .feature-pill { display:flex; align-items:center; gap:8px; background:var(--accent); color:var(--primary); padding:8px 16px; border-radius:50px; font-size:0.82rem; font-weight:600; }
+    .assessment-main { display:none; }
+    .assessment-main.visible { display:block; }
+    .assessment-result { display:none; }
+    .assessment-result.visible { display:block; }
+
+    .progress-info { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    .progress-text { font-size:0.82rem; color:var(--text-light); font-weight:600; }
+    .progress-pct { font-size:0.82rem; color:var(--primary); font-weight:700; }
+    
+    .category-badge { display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:var(--primary); padding:6px 14px; border-radius:50px; font-size:0.78rem; font-weight:700; margin-bottom:16px; }
+    
+    .scale-options { display:flex; gap:8px; flex-wrap:wrap; }
+    .scale-btn { flex:1; min-width:90px; padding:14px 8px; border:2px solid var(--border); border-radius:var(--radius-sm); text-align:center; cursor:pointer; transition:var(--transition); background:white; font-family:var(--font-main); }
+    .scale-btn:hover, .scale-btn.selected { border-color:var(--primary); background:var(--accent); }
+    .scale-btn .scale-emoji { font-size:1.5rem; display:block; margin-bottom:4px; }
+    .scale-btn .scale-label { font-size:0.75rem; font-weight:600; color:var(--text-medium); }
+    .scale-btn.selected .scale-label { color:var(--primary); }
+    
+    .nav-btns { display:flex; gap:12px; margin-top:24px; }
+    
+    /* Results */
+    .result-header { background:linear-gradient(135deg,var(--primary),var(--secondary)); border-radius:var(--radius-lg) var(--radius-lg) 0 0; padding:40px; text-align:center; color:white; }
+    .result-score { font-size:4rem; font-weight:900; color:white; line-height:1; }
+    .result-score-label { font-size:1.1rem; color:rgba(255,255,255,0.85); margin-top:6px; }
+    .result-body { background:white; border-radius:0 0 var(--radius-lg) var(--radius-lg); padding:36px; border:1px solid var(--border); border-top:none; }
+    
+    .dimension-card { margin-bottom:20px; }
+    .dimension-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .dimension-name { font-size:0.9rem; font-weight:700; color:var(--text-dark); }
+    .dimension-score { font-size:0.85rem; font-weight:700; }
+    .dimension-bar { height:10px; background:var(--bg-light); border-radius:10px; overflow:hidden; }
+    .dimension-fill { height:100%; border-radius:10px; transition:width 1.5s cubic-bezier(0.4,0,0.2,1); }
+    .dimension-desc { font-size:0.78rem; color:var(--text-light); margin-top:6px; }
+    
+    .recommendation-card { background:var(--bg-light); border-radius:var(--radius-md); padding:20px; margin-bottom:16px; display:flex; gap:14px; border:1px solid var(--border); }
+    .rec-icon { width:44px; height:44px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+    
+    .severity-ring { width:120px; height:120px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-direction:column; margin:0 auto 20px; border:6px solid; }
+    
+    @media (max-width:576px) { .scale-options { gap:6px; } .scale-btn { padding:10px 4px; } .scale-btn .scale-emoji { font-size:1.2rem; } }
+  </style>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="container-custom">
+    <div class="page-hero-content">
+      <div class="breadcrumb-custom">
+        <a href="index.html">الرئيسية</a>
+        <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+        <span>التقييم النفسي</span>
+      </div>
+      <h1 style="font-size:1.8rem;margin-bottom:8px;">التقييم النفسي <span style="color:var(--primary);">الذكي</span></h1>
+      <p style="font-size:0.9rem;color:var(--text-medium);">مصمم خصيصاً للعاملين في القطاع الإنساني</p>
+    </div>
+  </div>
+</div>
+
+<div class="assessment-page">
+  <div class="assessment-container">
+    <!-- Intro Screen -->
+    <div class="assessment-intro" id="introScreen">
+      <div style="font-size:3.5rem;margin-bottom:16px;">🧠</div>
+      <div class="section-badge" style="margin:0 auto 16px;"><i class="fas fa-brain"></i>تقييم مجاني وسري</div>
+      <h2 style="margin-bottom:14px;">اعرف مستوى <span style="color:var(--primary);">صحتك النفسية</span></h2>
+      <p style="max-width:520px;margin:0 auto 24px;font-size:0.95rem;color:var(--text-medium);">هذا التقييم مصمم من قبل خبراء نفسيين متخصصين في القطاع الإنساني. سيساعدك على فهم مستوى الضغط والاحتراق الوظيفي وجودة حياتك النفسية.</p>
+      <div class="features-pills">
+        <div class="feature-pill"><i class="fas fa-clock"></i>١٠-١٥ دقيقة</div>
+        <div class="feature-pill"><i class="fas fa-lock"></i>سري ومشفر</div>
+        <div class="feature-pill"><i class="fas fa-clipboard-list"></i>٢٠ سؤالاً</div>
+        <div class="feature-pill"><i class="fas fa-chart-bar"></i>نتائج فورية</div>
+      </div>
+      <div style="background:var(--accent);border-radius:var(--radius-md);padding:16px;margin:24px 0;max-width:460px;margin:20px auto;">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
+          <div style="text-align:center;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--primary);">4</div>
+            <div style="font-size:0.75rem;color:var(--text-light);">مجالات تقييم</div>
+          </div>
+          <div style="width:1px;background:var(--border);"></div>
+          <div style="text-align:center;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--secondary);">87%</div>
+            <div style="font-size:0.75rem;color:var(--text-light);">دقة التقييم</div>
+          </div>
+          <div style="width:1px;background:var(--border);"></div>
+          <div style="text-align:center;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--primary);">+5000</div>
+            <div style="font-size:0.75rem;color:var(--text-light);">استخدموه</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--accent-green);border:1px solid #B8E4CF;border-radius:var(--radius-sm);padding:12px 16px;max-width:460px;margin:0 auto 28px;display:flex;align-items:center;gap:10px;">
+        <i class="fas fa-shield-alt" style="color:var(--success);"></i>
+        <span style="font-size:0.82rem;color:var(--success);font-weight:600;">إجاباتك محمية وسرية تماماً. لا يمكن لأحد الاطلاع عليها إلا أنت.</span>
+      </div>
+      <button onclick="startAssessment()" class="btn-primary-custom btn-lg-custom" style="margin:0 auto;">
+        <i class="fas fa-play-circle"></i>
+        ابدأ التقييم الآن مجاناً
+      </button>
+      <p style="margin-top:16px;font-size:0.78rem;color:var(--text-light);">بالضغط على "ابدأ" توافق على <a href="#" style="color:var(--primary);">شروط الاستخدام</a></p>
+    </div>
+
+    <!-- Assessment Questions -->
+    <div class="assessment-main" id="assessmentMain">
+      <!-- Progress -->
+      <div style="background:white;border-radius:var(--radius-md);padding:20px 24px;border:1px solid var(--border);margin-bottom:20px;">
+        <div class="progress-info">
+          <span class="progress-text">السؤال <span id="qNum">1</span> من 20</span>
+          <span class="progress-pct" id="qPct">0%</span>
+        </div>
+        <div class="assessment-progress">
+          <div class="assessment-progress-bar" id="progressBar" style="width:5%"></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+          <span id="catLabel" class="category-badge"><i class="fas fa-fire" style="color:var(--primary);"></i>الاحتراق الوظيفي</span>
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="assessment-question" id="questionCard">
+        <div class="question-num" id="qContext">السؤال ١</div>
+        <h3 class="question-text" id="questionText">جارٍ التحميل...</h3>
+        <div class="answer-options" id="answerOptions"></div>
+        <div class="nav-btns">
+          <button class="btn-outline-custom" id="prevBtn" onclick="prevQuestion()" style="display:none;">
+            <i class="fas fa-arrow-right"></i> السابق
+          </button>
+          <button class="btn-primary-custom" id="nextBtn" onclick="nextQuestion()" style="margin-right:auto;">
+            التالي <i class="fas fa-arrow-left"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Category Progress -->
+      <div style="background:white;border-radius:var(--radius-md);padding:20px 24px;border:1px solid var(--border);margin-top:20px;">
+        <div style="font-size:0.85rem;font-weight:700;color:var(--text-medium);margin-bottom:14px;">التقدم في التقييم:</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-light);margin-bottom:4px;">
+              <span>الاحتراق الوظيفي</span><span id="cat1p">0%</span>
+            </div>
+            <div style="height:5px;background:var(--bg-light);border-radius:5px;overflow:hidden;"><div id="cat1bar" style="height:100%;background:var(--primary);border-radius:5px;width:0;transition:width 0.5s;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-light);margin-bottom:4px;">
+              <span>الصدمة النفسية</span><span id="cat2p">0%</span>
+            </div>
+            <div style="height:5px;background:var(--bg-light);border-radius:5px;overflow:hidden;"><div id="cat2bar" style="height:100%;background:var(--secondary);border-radius:5px;width:0;transition:width 0.5s;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-light);margin-bottom:4px;">
+              <span>جودة الحياة</span><span id="cat3p">0%</span>
+            </div>
+            <div style="height:5px;background:var(--bg-light);border-radius:5px;overflow:hidden;"><div id="cat3bar" style="height:100%;background:var(--primary-light);border-radius:5px;width:0;transition:width 0.5s;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-light);margin-bottom:4px;">
+              <span>المرونة النفسية</span><span id="cat4p">0%</span>
+            </div>
+            <div style="height:5px;background:var(--bg-light);border-radius:5px;overflow:hidden;"><div id="cat4bar" style="height:100%;background:var(--secondary-light);border-radius:5px;width:0;transition:width 0.5s;"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div class="assessment-result" id="resultsScreen">
+      <div style="border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);">
+        <div class="result-header">
+          <div style="font-size:1rem;color:rgba(255,255,255,0.8);margin-bottom:12px;">نتائج التقييم النفسي الشامل</div>
+          <div class="severity-ring" id="severityRing">
+            <div class="result-score" id="overallScore">72</div>
+          </div>
+          <div class="result-score-label" id="scoreLabel">مستوى الصحة النفسية: <strong>جيد مع بعض التحديات</strong></div>
+          <div style="margin-top:16px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+            <div style="text-align:center;">
+              <div style="font-size:1.2rem;font-weight:800;color:white;">متوسط</div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);">الاحتراق الوظيفي</div>
+            </div>
+            <div style="width:1px;background:rgba(255,255,255,0.2);"></div>
+            <div style="text-align:center;">
+              <div style="font-size:1.2rem;font-weight:800;color:white;">خفيف</div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);">الصدمة النفسية</div>
+            </div>
+            <div style="width:1px;background:rgba(255,255,255,0.2);"></div>
+            <div style="text-align:center;">
+              <div style="font-size:1.2rem;font-weight:800;color:white;">عالية</div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);">المرونة النفسية</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="result-body">
+          <!-- Dimensions -->
+          <h4 style="margin-bottom:20px;">📊 تحليل مفصّل لكل محور:</h4>
+          
+          <div class="dimension-card">
+            <div class="dimension-header">
+              <span class="dimension-name">🔥 الاحتراق الوظيفي</span>
+              <span class="dimension-score" style="color:var(--warning);">مستوى متوسط (58/100)</span>
+            </div>
+            <div class="dimension-bar"><div class="dimension-fill" style="width:0;background:linear-gradient(90deg,var(--secondary),var(--warning));" data-target="58"></div></div>
+            <div class="dimension-desc">تظهر علامات على الاستنزاف العاطفي. ينصح ببدء العمل مع مستشار متخصص في الاحتراق الوظيفي.</div>
+          </div>
+          
+          <div class="dimension-card">
+            <div class="dimension-header">
+              <span class="dimension-name">💙 الصدمة النفسية (PTSD)</span>
+              <span class="dimension-score" style="color:var(--success);">مستوى خفيف (25/100)</span>
+            </div>
+            <div class="dimension-bar"><div class="dimension-fill" style="width:0;background:linear-gradient(90deg,var(--secondary),#7DD4A8);" data-target="25"></div></div>
+            <div class="dimension-desc">الأعراض المرتبطة بالصدمة خفيفة. استمر في ممارسة تقنيات الاسترخاء والمعالجة النفسية.</div>
+          </div>
+          
+          <div class="dimension-card">
+            <div class="dimension-header">
+              <span class="dimension-name">🌈 جودة الحياة</span>
+              <span class="dimension-score" style="color:var(--primary);">جيدة (70/100)</span>
+            </div>
+            <div class="dimension-bar"><div class="dimension-fill" style="width:0;background:linear-gradient(90deg,var(--primary),var(--primary-light));" data-target="70"></div></div>
+            <div class="dimension-desc">جودة حياتك العامة جيدة. يمكن تطويرها من خلال دعم الرفاهية النفسية والاجتماعية.</div>
+          </div>
+          
+          <div class="dimension-card">
+            <div class="dimension-header">
+              <span class="dimension-name">💪 المرونة النفسية</span>
+              <span class="dimension-score" style="color:var(--success);">مرتفعة (82/100)</span>
+            </div>
+            <div class="dimension-bar"><div class="dimension-fill" style="width:0;background:linear-gradient(90deg,var(--secondary),var(--success));" data-target="82"></div></div>
+            <div class="dimension-desc">لديك قدرة جيدة على التكيف والتعافي. هذه قوة كبيرة يمكن تعزيزها أكثر.</div>
+          </div>
+          
+          <!-- Recommendations -->
+          <h4 style="margin:28px 0 16px;">🎯 توصياتنا المخصصة لك:</h4>
+          
+          <div class="recommendation-card">
+            <div class="rec-icon" style="background:var(--accent);color:var(--primary);"><i class="fas fa-user-md"></i></div>
+            <div>
+              <strong style="display:block;margin-bottom:4px;">احجز جلسة مع متخصص في الاحتراق الوظيفي</strong>
+              <span style="font-size:0.83rem;color:var(--text-medium);">نتائجك تشير إلى أن الجلسات الفردية ستكون الأكثر فاعلية. نوصيك بالتحدث مع د. محمد الخليل أو د. فيصل العمر.</span>
+            </div>
+          </div>
+          
+          <div class="recommendation-card">
+            <div class="rec-icon" style="background:var(--accent-green);color:var(--success);"><i class="fas fa-brain"></i></div>
+            <div>
+              <strong style="display:block;margin-bottom:4px;">مارس تقنيات اليقظة الذهنية (Mindfulness)</strong>
+              <span style="font-size:0.83rem;color:var(--text-medium);">١٠ دقائق يومياً من التأمل وتمارين التنفس يمكن أن تخفف من الضغط بشكل ملحوظ.</span>
+            </div>
+          </div>
+          
+          <div class="recommendation-card">
+            <div class="rec-icon" style="background:#FEF9EE;color:var(--warning);"><i class="fas fa-book"></i></div>
+            <div>
+              <strong style="display:block;margin-bottom:4px;">اقرأ مقالاتنا عن الاحتراق الوظيفي</strong>
+              <span style="font-size:0.83rem;color:var(--text-medium);">لدينا مكتبة متخصصة من المقالات والأدوات لمساعدتك على فهم ومعالجة ما تشعر به.</span>
+            </div>
+          </div>
+          
+          <!-- Matched Consultants -->
+          <h4 style="margin:28px 0 16px;">🤝 المستشارون الموصى بهم لك:</h4>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px;">
+            <div style="display:flex;align-items:center;gap:14px;background:var(--bg-light);border-radius:var(--radius-md);padding:16px;">
+              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-size:1.1rem;font-weight:700;flex-shrink:0;">د.م</div>
+              <div style="flex:1;">
+                <div style="font-weight:700;">د. محمد الخليل</div>
+                <div style="font-size:0.8rem;color:var(--primary);">متخصص في الاحتراق الوظيفي</div>
+                <div style="font-size:0.78rem;color:var(--warning);"><i class="fas fa-star"></i> 4.9 • 12 سنة خبرة</div>
+              </div>
+              <div style="display:inline-block;background:var(--accent-green);color:var(--success);font-size:0.78rem;font-weight:700;padding:4px 10px;border-radius:50px;">تطابق ٩٤%</div>
+              <a href="booking.html?id=1" class="btn-primary-custom" style="padding:8px 16px;font-size:0.82rem;">احجز</a>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;background:var(--bg-light);border-radius:var(--radius-md);padding:16px;">
+              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#5B7EC9,var(--primary));display:flex;align-items:center;justify-content:center;color:white;font-size:1.1rem;font-weight:700;flex-shrink:0;">د.ف</div>
+              <div style="flex:1;">
+                <div style="font-weight:700;">د. فيصل العمر</div>
+                <div style="font-size:0.8rem;color:var(--primary);">مستشار مهني وتنظيمي</div>
+                <div style="font-size:0.78rem;color:var(--warning);"><i class="fas fa-star"></i> 5.0 • 15 سنة خبرة</div>
+              </div>
+              <div style="display:inline-block;background:var(--accent-green);color:var(--success);font-size:0.78rem;font-weight:700;padding:4px 10px;border-radius:50px;">تطابق ٨٨%</div>
+              <a href="booking.html?id=3" class="btn-primary-custom" style="padding:8px 16px;font-size:0.82rem;">احجز</a>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <a href="consultants.html" class="btn-primary-custom btn-lg-custom" style="flex:2;justify-content:center;">
+              <i class="fas fa-user-md"></i>
+              احجز مع مستشار الآن
+            </a>
+            <button onclick="retakeAssessment()" class="btn-outline-custom btn-lg-custom" style="flex:1;justify-content:center;">
+              <i class="fas fa-redo"></i>
+              إعادة التقييم
+            </button>
+          </div>
+          
+          <!-- Download Report -->
+          <div style="text-align:center;margin-top:20px;">
+            <button onclick="window.print()" style="background:none;border:none;cursor:pointer;color:var(--primary);font-family:Cairo,sans-serif;font-weight:600;font-size:0.88rem;display:inline-flex;align-items:center;gap:8px;">
+              <i class="fas fa-download"></i>
+              تحميل تقرير التقييم (PDF)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end container -->
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/js/all.min.js" defer></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+const questions = [
+  { cat:'الاحتراق الوظيفي', icon:'🔥', text:'خلال الأسابيع الأخيرة، كيف تصف مستوى طاقتك العاطفية في نهاية يوم العمل؟', type:'scale', options:['مستنفدة تماماً','متعبة جداً','متعبة قليلاً','جيدة','ممتازة'], emojis:['😵','😔','😐','🙂','😄'] },
+  { cat:'الاحتراق الوظيفي', icon:'🔥', text:'هل تشعر بالانفصال العاطفي عن الحالات الإنسانية التي تعمل معها مقارنةً بما كنت تشعر به سابقاً؟', type:'frequency', options:['دائماً','غالباً','أحياناً','نادراً','لا أبداً'], emojis:['😔','😕','😐','🙂','😊'] },
+  { cat:'الاحتراق الوظيفي', icon:'🔥', text:'هل تجد صعوبة في الفصل بين العمل والحياة الشخصية؟', type:'frequency', options:['دائماً','غالباً','أحياناً','نادراً','لا أبداً'], emojis:['😰','😟','😐','😌','😎'] },
+  { cat:'الاحتراق الوظيفي', icon:'🔥', text:'كيف تصف حماسك ودوافعك للعمل الإنساني مقارنة بالسنوات الماضية؟', type:'scale', options:['انخفض كثيراً','انخفض','لم يتغير','ارتفع قليلاً','ارتفع كثيراً'], emojis:['📉','↘️','➡️','↗️','📈'] },
+  { cat:'الاحتراق الوظيفي', icon:'🔥', text:'هل تشعر بالإحباط من قدرتك على إحداث تأثير حقيقي في عملك الإنساني؟', type:'frequency', options:['دائماً','غالباً','أحياناً','نادراً','لا أبداً'], emojis:['😞','😕','😐','🙂','💪'] },
+  { cat:'الصدمة النفسية', icon:'💙', text:'هل تعاني من أفكار أو صور متكررة لا إرادية عن مشاهد صعبة شهدتها في العمل؟', type:'frequency', options:['يومياً','أكثر مرة أسبوعياً','مرة أسبوعياً','نادراً','لا أبداً'], emojis:['😰','😟','😐','😌','😊'] },
+  { cat:'الصدمة النفسية', icon:'💙', text:'هل تتجنب مواقف أو محادثات أو أماكن تذكّرك بأحداث صعبة شهدتها في العمل؟', type:'frequency', options:['دائماً','غالباً','أحياناً','نادراً','لا أبداً'], emojis:['🙅','😟','😐','😌','✅'] },
+  { cat:'الصدمة النفسية', icon:'💙', text:'هل تعاني من صعوبة في النوم أو كوابيس متعلقة بخبرات العمل الإنساني؟', type:'frequency', options:['كل ليلة','معظم الليالي','أحياناً','نادراً','لا أبداً'], emojis:['😴','😪','😐','😌','🌙'] },
+  { cat:'الصدمة النفسية', icon:'💙', text:'هل تشعر بالتوتر أو اليقظة المفرطة في مواقف آمنة؟', type:'scale', options:['طوال الوقت','كثيراً','أحياناً','قليلاً','لا أبداً'], emojis:['😱','😟','😐','😌','😊'] },
+  { cat:'الصدمة النفسية', icon:'💙', text:'هل تجد صعوبة في الانخراط في أنشطة ترفيهية أو اجتماعية بسبب ذكريات مؤلمة؟', type:'frequency', options:['دائماً','غالباً','أحياناً','نادراً','لا أبداً'], emojis:['😔','😕','😐','🙂','🎉'] },
+  { cat:'جودة الحياة', icon:'🌈', text:'كيف تقيّم جودة علاقاتك الاجتماعية والعائلية في الفترة الأخيرة؟', type:'scale', options:['سيئة جداً','سيئة','متوسطة','جيدة','ممتازة'], emojis:['💔','😕','😐','🤗','❤️'] },
+  { cat:'جودة الحياة', icon:'🌈', text:'هل تستطيع الاستمتاع بالأشياء التي كانت تُدخل السعادة إلى قلبك من قبل؟', type:'scale', options:['لا إطلاقاً','نادراً','أحياناً','غالباً','دائماً'], emojis:['💔','😔','😐','😊','😄'] },
+  { cat:'جودة الحياة', icon:'🌈', text:'كيف تصف مستوى رضاك عن حياتك عموماً في الوقت الحالي؟', type:'scale', options:['غير راضٍ إطلاقاً','غير راضٍ','محايد','راضٍ','راضٍ جداً'], emojis:['😞','😕','😐','😊','😄'] },
+  { cat:'جودة الحياة', icon:'🌈', text:'هل تعاني من أعراض جسدية مرتبطة بالتوتر (صداع، آلام في الظهر، اضطرابات هضمية...)?', type:'frequency', options:['يومياً','معظم الأيام','أحياناً','نادراً','لا أبداً'], emojis:['🤕','😟','😐','😌','💪'] },
+  { cat:'جودة الحياة', icon:'🌈', text:'هل تشعر أن لديك غرضاً ومعنىً واضحاً في حياتك؟', type:'scale', options:['لا إطلاقاً','نادراً','أحياناً','غالباً','دائماً'], emojis:['😶','😕','😐','✨','🌟'] },
+  { cat:'المرونة النفسية', icon:'💪', text:'عندما تواجه أزمة أو صدمة، كم من الوقت تحتاج عادة للتعافي منها؟', type:'scale', options:['أشهر طويلة','أسابيع عديدة','أسبوع أو أسبوعين','أيام قليلة','يوم أو يومان'], emojis:['🐢','🚶','🚴','🏃','⚡'] },
+  { cat:'المرونة النفسية', icon:'💪', text:'هل لديك شبكة دعم اجتماعي وعائلي تلجأ إليها في الأوقات الصعبة؟', type:'scale', options:['لا أحد','شخص واحد','بعض الأشخاص','عدة أشخاص','شبكة قوية'], emojis:['🏝️','👤','👥','👨‍👩‍👧','🤝'] },
+  { cat:'المرونة النفسية', icon:'💪', text:'هل تمارس أي استراتيجيات للعناية بصحتك النفسية بشكل منتظم؟', type:'scale', options:['لا شيء','نادراً','أحياناً','منتظم','منتظم جداً'], emojis:['❌','😕','😐','✅','⭐'] },
+  { cat:'المرونة النفسية', icon:'💪', text:'كيف تتعامل عادة مع مشاعر الإحباط والفشل في عملك؟', type:'scale', options:['أُعاني كثيراً','يصعب علي','محايد','أتعامل معه جيداً','أتعامل ممتاز'], emojis:['😰','😟','😐','🙂','💪'] },
+  { cat:'المرونة النفسية', icon:'💪', text:'هل تشعر أن لديك القدرة على التحكم في استجابتك العاطفية للمواقف الصعبة؟', type:'scale', options:['لا إطلاقاً','نادراً','أحياناً','غالباً','دائماً'], emojis:['😵','😕','😐','💪','🦸'] },
+];
+
+const categories = ['الاحتراق الوظيفي','الصدمة النفسية','جودة الحياة','المرونة النفسية'];
+let currentQ = 0;
+const answers = new Array(questions.length).fill(null);
+
+function startAssessment() {
+  document.getElementById('introScreen').style.display = 'none';
+  document.getElementById('assessmentMain').classList.add('visible');
+  renderQuestion(0);
+}
+
+function renderQuestion(idx) {
+  const q = questions[idx];
+  currentQ = idx;
+  const pct = Math.round((idx / questions.length) * 100);
+  
+  document.getElementById('qNum').textContent = idx + 1;
+  document.getElementById('qPct').textContent = pct + '%';
+  document.getElementById('progressBar').style.width = Math.max(5, pct) + '%';
+  document.getElementById('qContext').textContent = `السؤال ${idx + 1}`;
+  document.getElementById('questionText').textContent = q.text;
+  
+  // Category badge
+  const catColors = { 'الاحتراق الوظيفي':'🔥','الصدمة النفسية':'💙','جودة الحياة':'🌈','المرونة النفسية':'💪' };
+  document.getElementById('catLabel').innerHTML = `${catColors[q.cat]} ${q.cat}`;
+
+  // Category progress bars
+  const catQ = [5,5,5,5];
+  const catAnswered = [0,0,0,0];
+  questions.forEach((qq, i) => {
+    const ci = categories.indexOf(qq.cat);
+    if (answers[i] !== null) catAnswered[ci]++;
+  });
+  const catIds = ['cat1','cat2','cat3','cat4'];
+  catIds.forEach((id, i) => {
+    const p = catQ[i] > 0 ? Math.round(catAnswered[i] / catQ[i] * 100) : 0;
+    document.getElementById(id+'p').textContent = p + '%';
+    document.getElementById(id+'bar').style.width = p + '%';
+  });
+
+  // Render options
+  const optionsEl = document.getElementById('answerOptions');
+  optionsEl.className = 'scale-options';
+  optionsEl.innerHTML = q.options.map((opt, i) => `
+    <button class="scale-btn${answers[idx] === i ? ' selected' : ''}" onclick="selectAnswer(${i})">
+      <span class="scale-emoji">${q.emojis[i]}</span>
+      <span class="scale-label">${opt}</span>
+    </button>
+  `).join('');
+
+  document.getElementById('prevBtn').style.display = idx > 0 ? 'flex' : 'none';
+  document.getElementById('nextBtn').textContent = idx === questions.length - 1 ? 'إنهاء التقييم وعرض النتائج' : 'التالي';
+  if (idx === questions.length - 1) document.getElementById('nextBtn').innerHTML = 'إنهاء وعرض النتائج <i class="fas fa-chart-bar"></i>';
+  else document.getElementById('nextBtn').innerHTML = 'التالي <i class="fas fa-arrow-left"></i>';
+}
+
+function selectAnswer(val) {
+  answers[currentQ] = val;
+  document.querySelectorAll('.scale-btn').forEach((b, i) => {
+    b.classList.toggle('selected', i === val);
+  });
+  // Auto-advance after short delay
+  setTimeout(() => {
+    if (currentQ < questions.length - 1) nextQuestion();
+  }, 500);
+}
+
+function nextQuestion() {
+  if (answers[currentQ] === null) { showToastMsg('يرجى اختيار إجابة أولاً'); return; }
+  if (currentQ < questions.length - 1) renderQuestion(currentQ + 1);
+  else showResults();
+}
+
+function prevQuestion() {
+  if (currentQ > 0) renderQuestion(currentQ - 1);
+}
+
+function showResults() {
+  document.getElementById('assessmentMain').classList.remove('visible');
+  document.getElementById('resultsScreen').classList.add('visible');
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll('.dimension-fill').forEach(bar => {
+      bar.style.width = bar.getAttribute('data-target') + '%';
+    });
+  }, 300);
+}
+
+function retakeAssessment() {
+  answers.fill(null);
+  currentQ = 0;
+  document.getElementById('resultsScreen').classList.remove('visible');
+  document.getElementById('introScreen').style.display = 'block';
+}
+
+function showToastMsg(msg) {
+  if (window.showToast) window.showToast(msg, 'warning');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المستشارون | منصة صفحة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .filter-sidebar { width: 280px; flex-shrink: 0; }
+    .filter-card { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 24px; margin-bottom: 16px; }
+    .filter-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; color: var(--text-dark); }
+    .filter-option { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--bg-light); cursor: pointer; }
+    .filter-option:last-child { border-bottom: none; }
+    .filter-check { width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: var(--transition); flex-shrink: 0; }
+    .filter-check.active { background: var(--primary); border-color: var(--primary); color: white; font-size: 0.65rem; }
+    .filter-label { font-size: 0.88rem; color: var(--text-medium); font-weight: 500; }
+    .filter-count { font-size: 0.75rem; color: var(--text-light); background: var(--bg-light); padding: 2px 8px; border-radius: 50px; }
+
+    .consultants-main { flex: 1; }
+    .search-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+    .search-input { flex: 1; min-width: 200px; position: relative; }
+    .search-input i { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-light); }
+    .search-input input { width: 100%; padding: 12px 42px 12px 16px; border: 1.5px solid var(--border); border-radius: 50px; font-family: var(--font-main); font-size: 0.92rem; }
+    .search-input input:focus { outline: none; border-color: var(--primary); }
+
+    .sort-select { padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 50px; font-family: var(--font-main); font-size: 0.88rem; color: var(--text-medium); cursor: pointer; }
+
+    .results-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; font-size: 0.88rem; color: var(--text-light); }
+    .view-toggle { display: flex; gap: 4px; }
+    .view-btn { width: 32px; height: 32px; border-radius: 6px; border: 1.5px solid var(--border); background: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.85rem; color: var(--text-light); transition: var(--transition); }
+    .view-btn.active, .view-btn:hover { background: var(--accent); border-color: var(--primary); color: var(--primary); }
+
+    .consultants-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .consultants-list.list-view { grid-template-columns: 1fr;}
+    .consultants-list.list-view .consultant-card-top { flex-direction: row; }
+
+    /* Consultant Profile Modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+    .modal-box { background: white; border-radius: var(--radius-lg); max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; animation: fadeIn 0.3s ease; }
+    .modal-header { padding: 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: white; z-index: 2; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+    .modal-close { width: 36px; height: 36px; border-radius: 50%; background: var(--bg-soft); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-medium); transition: var(--transition); }
+    .modal-close:hover { background: var(--danger); color: white; }
+    .modal-body { padding: 28px; }
+
+    .rating-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .rating-bar-label { font-size: 0.8rem; color: var(--text-medium); width: 70px; flex-shrink: 0; }
+    .rating-bar-track { flex: 1; height: 6px; background: var(--bg-light); border-radius: 6px; overflow: hidden; }
+    .rating-bar-fill { height: 100%; background: var(--warning); border-radius: 6px; }
+    .rating-bar-num { font-size: 0.8rem; font-weight: 600; color: var(--text-medium); width: 24px; text-align: left; }
+
+    @media (max-width: 991px) {
+      .filter-sidebar { display: none; }
+      .consultants-list { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .consultants-list { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<!-- Page Hero -->
+<div class="page-hero">
+  <div class="container-custom">
+    <div class="page-hero-content">
+      <div class="breadcrumb-custom">
+        <a href="index.html">الرئيسية</a>
+        <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+        <span>المستشارون</span>
+      </div>
+      <h1 style="font-size:2rem;margin-bottom:10px;">نخبة <span style="color:var(--primary);">المستشارين</span> المعتمدين</h1>
+      <p style="color:var(--text-medium);font-size:0.95rem;">متخصصون في دعم العاملين في القطاع الإنساني نفسياً ومهنياً</p>
+    </div>
+  </div>
+</div>
+
+<section style="padding:40px 0 80px;">
+  <div class="container-custom">
+    <div style="display:flex;gap:28px;">
+
+      <!-- Filter Sidebar -->
+      <div class="filter-sidebar">
+        <!-- Smart Match Banner -->
+        <div style="background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:var(--radius-md);padding:20px;margin-bottom:16px;color:white;">
+          <div style="font-size:1.3rem;margin-bottom:8px;">🤖</div>
+          <h4 style="color:white;margin-bottom:6px;font-size:0.95rem;">التوصية الذكية</h4>
+          <p style="font-size:0.8rem;color:rgba(255,255,255,0.85);margin-bottom:14px;">أجرِ التقييم وسنرشح لك المستشار الأنسب تلقائياً</p>
+          <a href="assessment.html" style="display:block;text-align:center;background:rgba(255,255,255,0.2);color:white;padding:9px;border-radius:50px;font-size:0.82rem;font-weight:700;">ابدأ التقييم</a>
+        </div>
+
+        <div class="filter-card">
+          <div class="filter-title"><i class="fas fa-sliders-h" style="color:var(--primary);"></i> الفلاتر</div>
+          <button style="width:100%;padding:8px;background:var(--accent);color:var(--primary);border:1px solid var(--border);border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:Cairo,sans-serif;" onclick="resetFilters()">
+            <i class="fas fa-redo" style="margin-left:4px;"></i>إعادة ضبط
+          </button>
+        </div>
+
+        <div class="filter-card">
+          <div class="filter-title"><i class="fas fa-stethoscope" style="color:var(--primary);"></i> التخصص</div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check active"><i class="fas fa-check"></i></div>
+              <span class="filter-label">جميع التخصصات</span>
+            </div>
+            <span class="filter-count">85</span>
+          </div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check"></div>
+              <span class="filter-label">الصدمات النفسية</span>
+            </div>
+            <span class="filter-count">24</span>
+          </div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check"></div>
+              <span class="filter-label">الاحتراق الوظيفي</span>
+            </div>
+            <span class="filter-count">31</span>
+          </div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check"></div>
+              <span class="filter-label">القلق والاكتئاب</span>
+            </div>
+            <span class="filter-count">18</span>
+          </div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check"></div>
+              <span class="filter-label">استشارات مهنية</span>
+            </div>
+            <span class="filter-count">22</span>
+          </div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check"></div>
+              <span class="filter-label">قيادة الفرق</span>
+            </div>
+            <span class="filter-count">15</span>
+          </div>
+        </div>
+
+        <div class="filter-card">
+          <div class="filter-title"><i class="fas fa-language" style="color:var(--primary);"></i> اللغة</div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check active"><i class="fas fa-check"></i></div>
+              <span class="filter-label">العربية</span>
+            </div>
+            <span class="filter-count">65</span>
+          </div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check"></div>
+              <span class="filter-label">الإنجليزية</span>
+            </div>
+            <span class="filter-count">48</span>
+          </div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check"></div>
+              <span class="filter-label">الفرنسية</span>
+            </div>
+            <span class="filter-count">12</span>
+          </div>
+        </div>
+
+        <div class="filter-card">
+          <div class="filter-title"><i class="fas fa-dollar-sign" style="color:var(--primary);"></i> السعر (ريال/جلسة)</div>
+          <div style="padding:8px 0;">
+            <input type="range" min="50" max="500" value="300" style="width:100%;accent-color:var(--primary);" oninput="document.getElementById('priceVal').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-light);margin-top:6px;">
+              <span>٥٠ ريال</span>
+              <span>حتى <strong id="priceVal" style="color:var(--primary);">٣٠٠</strong> ريال</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-card">
+          <div class="filter-title"><i class="fas fa-star" style="color:var(--primary);"></i> التقييم</div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check"></div>
+              <span class="filter-label" style="color:var(--warning);">★★★★★ 5.0</span>
+            </div>
+            <span class="filter-count">12</span>
+          </div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check"></div>
+              <span class="filter-label" style="color:var(--warning);">★★★★ 4+</span>
+            </div>
+            <span class="filter-count">54</span>
+          </div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check"></div>
+              <span class="filter-label" style="color:var(--warning);">★★★ 3+</span>
+            </div>
+            <span class="filter-count">71</span>
+          </div>
+        </div>
+
+        <div class="filter-card">
+          <div class="filter-title"><i class="fas fa-clock" style="color:var(--primary);"></i> التوافر</div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check"></div>
+              <span class="filter-label">متاح الآن</span>
+            </div>
+            <span class="filter-count">18</span>
+          </div>
+          <div class="filter-option" onclick="toggleFilter(this)">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="filter-check"></div>
+              <span class="filter-label">هذا الأسبوع</span>
+            </div>
+            <span class="filter-count">43</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="consultants-main">
+        <!-- Search & Sort -->
+        <div class="search-bar">
+          <div class="search-input">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="ابحث عن مستشار..." oninput="filterConsultants(this.value)" />
+          </div>
+          <select class="sort-select" onchange="sortConsultants(this.value)">
+            <option value="recommended">الأكثر توصية</option>
+            <option value="rating">الأعلى تقييماً</option>
+            <option value="price-low">السعر: الأقل أولاً</option>
+            <option value="price-high">السعر: الأعلى أولاً</option>
+            <option value="experience">الأكثر خبرة</option>
+          </select>
+        </div>
+
+        <div class="results-info">
+          <span id="resultsCount">عرض <strong>8</strong> من <strong>85</strong> مستشار</span>
+          <div class="view-toggle">
+            <button class="view-btn active" onclick="setView('grid', this)" title="عرض شبكة"><i class="fas fa-th"></i></button>
+            <button class="view-btn" onclick="setView('list', this)" title="عرض قائمة"><i class="fas fa-list"></i></button>
+          </div>
+        </div>
+
+        <!-- Consultants Grid -->
+        <div class="consultants-list" id="consultantsList">
+
+          <!-- Card 1 -->
+          <div class="consultant-card" data-name="محمد الخليل" data-price="150" data-rating="4.9" data-exp="12">
+            <div class="consultant-card-top">
+              <div class="consultant-avatar">د.م</div>
+              <div class="consultant-info">
+                <h4>د. محمد الخليل</h4>
+                <div class="consultant-specialty">علم النفس الإكلينيكي</div>
+                <div class="consultant-exp"><i class="fas fa-briefcase" style="margin-left:4px;"></i>12 سنة خبرة</div>
+              </div>
+              <div class="consultant-verified"><i class="fas fa-check"></i>معتمد</div>
+            </div>
+            <div class="consultant-card-body">
+              <div class="consultant-tags">
+                <span class="consultant-tag">الاحتراق الوظيفي</span>
+                <span class="consultant-tag">الصدمات</span>
+                <span class="consultant-tag">القيادة</span>
+              </div>
+              <div class="consultant-meta">
+                <div class="consultant-rating"><i class="fas fa-star"></i> 4.9 <span style="color:var(--text-light);font-weight:400;">(248)</span></div>
+                <div class="consultant-sessions">450+ جلسة</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                <span class="consultant-price">150 ريال/جلسة</span>
+                <span style="font-size:0.8rem;color:var(--success);font-weight:600;"><span style="display:inline-block;width:8px;height:8px;background:var(--success);border-radius:50%;margin-left:4px;"></span>متاح الآن</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="consultant-card-btn" style="background:var(--bg-light);color:var(--primary);border:1.5px solid var(--border);" onclick="openConsultantModal(1)">
+                  <i class="fas fa-eye" style="margin-left:4px;"></i>الملف الشخصي
+                </button>
+                <button class="consultant-card-btn" onclick="window.location='booking.html?id=1'">
+                  <i class="fas fa-calendar-plus" style="margin-left:4px;"></i>احجز الآن
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="consultant-card" data-name="نور الحسيني" data-price="130" data-rating="4.8" data-exp="8">
+            <div class="consultant-card-top">
+              <div class="consultant-avatar" style="background:linear-gradient(135deg,var(--secondary),var(--primary));">د.ن</div>
+              <div class="consultant-info">
+                <h4>د. نور الحسيني</h4>
+                <div class="consultant-specialty">معالجة الصدمات</div>
+                <div class="consultant-exp"><i class="fas fa-briefcase" style="margin-left:4px;"></i>8 سنوات خبرة</div>
+              </div>
+              <div class="consultant-verified"><i class="fas fa-check"></i>معتمد</div>
+            </div>
+            <div class="consultant-card-body">
+              <div class="consultant-tags">
+                <span class="consultant-tag">PTSD</span>
+                <span class="consultant-tag">القلق</span>
+                <span class="consultant-tag">الاكتئاب</span>
+              </div>
+              <div class="consultant-meta">
+                <div class="consultant-rating"><i class="fas fa-star"></i> 4.8 <span style="color:var(--text-light);font-weight:400;">(193)</span></div>
+                <div class="consultant-sessions">320+ جلسة</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                <span class="consultant-price">130 ريال/جلسة</span>
+                <span style="font-size:0.8rem;color:var(--warning);font-weight:600;"><span style="display:inline-block;width:8px;height:8px;background:var(--warning);border-radius:50%;margin-left:4px;"></span>مشغول</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="consultant-card-btn" style="background:var(--bg-light);color:var(--primary);border:1.5px solid var(--border);" onclick="openConsultantModal(2)">
+                  <i class="fas fa-eye" style="margin-left:4px;"></i>الملف الشخصي
+                </button>
+                <button class="consultant-card-btn" onclick="window.location='booking.html?id=2'">
+                  <i class="fas fa-calendar-plus" style="margin-left:4px;"></i>احجز الآن
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="consultant-card" data-name="فيصل العمر" data-price="200" data-rating="5.0" data-exp="15">
+            <div class="consultant-card-top">
+              <div class="consultant-avatar" style="background:linear-gradient(135deg,#5B7EC9,var(--primary));">د.ف</div>
+              <div class="consultant-info">
+                <h4>د. فيصل العمر</h4>
+                <div class="consultant-specialty">مستشار مهني وتنظيمي</div>
+                <div class="consultant-exp"><i class="fas fa-briefcase" style="margin-left:4px;"></i>15 سنة خبرة</div>
+              </div>
+              <div class="consultant-verified"><i class="fas fa-check"></i>معتمد</div>
+            </div>
+            <div class="consultant-card-body">
+              <div class="consultant-tags">
+                <span class="consultant-tag">القيادة</span>
+                <span class="consultant-tag">الفرق</span>
+                <span class="consultant-tag">الإدارة</span>
+              </div>
+              <div class="consultant-meta">
+                <div class="consultant-rating"><i class="fas fa-star" style="color:var(--warning);"></i> 5.0 <span style="color:var(--text-light);font-weight:400;">(312)</span></div>
+                <div class="consultant-sessions">600+ جلسة</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                <span class="consultant-price">200 ريال/جلسة</span>
+                <span style="font-size:0.8rem;color:var(--success);font-weight:600;"><span style="display:inline-block;width:8px;height:8px;background:var(--success);border-radius:50%;margin-left:4px;"></span>متاح الآن</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="consultant-card-btn" style="background:var(--bg-light);color:var(--primary);border:1.5px solid var(--border);" onclick="openConsultantModal(3)">
+                  <i class="fas fa-eye" style="margin-left:4px;"></i>الملف الشخصي
+                </button>
+                <button class="consultant-card-btn" onclick="window.location='booking.html?id=3'">
+                  <i class="fas fa-calendar-plus" style="margin-left:4px;"></i>احجز الآن
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="consultant-card" data-name="سارة الأحمدي" data-price="160" data-rating="4.9" data-exp="10">
+            <div class="consultant-card-top">
+              <div class="consultant-avatar" style="background:linear-gradient(135deg,#E07B7B,#C04F7A);">د.س</div>
+              <div class="consultant-info">
+                <h4>د. سارة الأحمدي</h4>
+                <div class="consultant-specialty">معالجة نفسية - صدمات</div>
+                <div class="consultant-exp"><i class="fas fa-briefcase" style="margin-left:4px;"></i>10 سنوات خبرة</div>
+              </div>
+              <div class="consultant-verified"><i class="fas fa-check"></i>معتمد</div>
+            </div>
+            <div class="consultant-card-body">
+              <div class="consultant-tags">
+                <span class="consultant-tag">الصدمة المعقدة</span>
+                <span class="consultant-tag">الرحمة</span>
+                <span class="consultant-tag">المرونة</span>
+              </div>
+              <div class="consultant-meta">
+                <div class="consultant-rating"><i class="fas fa-star"></i> 4.9 <span style="color:var(--text-light);font-weight:400;">(278)</span></div>
+                <div class="consultant-sessions">520+ جلسة</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                <span class="consultant-price">160 ريال/جلسة</span>
+                <span style="font-size:0.8rem;color:var(--success);font-weight:600;"><span style="display:inline-block;width:8px;height:8px;background:var(--success);border-radius:50%;margin-left:4px;"></span>متاحة الآن</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="consultant-card-btn" style="background:var(--bg-light);color:var(--primary);border:1.5px solid var(--border);" onclick="openConsultantModal(4)">
+                  <i class="fas fa-eye" style="margin-left:4px;"></i>الملف الشخصي
+                </button>
+                <button class="consultant-card-btn" onclick="window.location='booking.html?id=4'">
+                  <i class="fas fa-calendar-plus" style="margin-left:4px;"></i>احجز الآن
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="consultant-card" data-name="خالد المطيري" data-price="120" data-rating="4.7" data-exp="7">
+            <div class="consultant-card-top">
+              <div class="consultant-avatar" style="background:linear-gradient(135deg,#2E8B57,#4CAF82);">د.خ</div>
+              <div class="consultant-info">
+                <h4>د. خالد المطيري</h4>
+                <div class="consultant-specialty">إرشاد نفسي - ضغط</div>
+                <div class="consultant-exp"><i class="fas fa-briefcase" style="margin-left:4px;"></i>7 سنوات خبرة</div>
+              </div>
+              <div class="consultant-verified"><i class="fas fa-check"></i>معتمد</div>
+            </div>
+            <div class="consultant-card-body">
+              <div class="consultant-tags">
+                <span class="consultant-tag">الضغط النفسي</span>
+                <span class="consultant-tag">اليقظة</span>
+                <span class="consultant-tag">التوازن</span>
+              </div>
+              <div class="consultant-meta">
+                <div class="consultant-rating"><i class="fas fa-star"></i> 4.7 <span style="color:var(--text-light);font-weight:400;">(156)</span></div>
+                <div class="consultant-sessions">280+ جلسة</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                <span class="consultant-price">120 ريال/جلسة</span>
+                <span style="font-size:0.8rem;color:var(--success);font-weight:600;"><span style="display:inline-block;width:8px;height:8px;background:var(--success);border-radius:50%;margin-left:4px;"></span>متاح الآن</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="consultant-card-btn" style="background:var(--bg-light);color:var(--primary);border:1.5px solid var(--border);" onclick="openConsultantModal(5)">
+                  <i class="fas fa-eye" style="margin-left:4px;"></i>الملف الشخصي
+                </button>
+                <button class="consultant-card-btn" onclick="window.location='booking.html?id=5'">
+                  <i class="fas fa-calendar-plus" style="margin-left:4px;"></i>احجز الآن
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="consultant-card" data-name="ليلى بكر" data-price="175" data-rating="4.9" data-exp="11">
+            <div class="consultant-card-top">
+              <div class="consultant-avatar" style="background:linear-gradient(135deg,#7B68EE,#4169E1);">د.ل</div>
+              <div class="consultant-info">
+                <h4>د. ليلى بكر</h4>
+                <div class="consultant-specialty">علاج معرفي سلوكي</div>
+                <div class="consultant-exp"><i class="fas fa-briefcase" style="margin-left:4px;"></i>11 سنة خبرة</div>
+              </div>
+              <div class="consultant-verified"><i class="fas fa-check"></i>معتمد</div>
+            </div>
+            <div class="consultant-card-body">
+              <div class="consultant-tags">
+                <span class="consultant-tag">CBT</span>
+                <span class="consultant-tag">القلق المزمن</span>
+                <span class="consultant-tag">العلاقات</span>
+              </div>
+              <div class="consultant-meta">
+                <div class="consultant-rating"><i class="fas fa-star"></i> 4.9 <span style="color:var(--text-light);font-weight:400;">(234)</span></div>
+                <div class="consultant-sessions">410+ جلسة</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                <span class="consultant-price">175 ريال/جلسة</span>
+                <span style="font-size:0.8rem;color:var(--text-light);font-weight:600;"><span style="display:inline-block;width:8px;height:8px;background:var(--text-light);border-radius:50%;margin-left:4px;"></span>غير متاحة</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="consultant-card-btn" style="background:var(--bg-light);color:var(--primary);border:1.5px solid var(--border);" onclick="openConsultantModal(6)">
+                  <i class="fas fa-eye" style="margin-left:4px;"></i>الملف الشخصي
+                </button>
+                <button class="consultant-card-btn" onclick="window.location='booking.html?id=6'">
+                  <i class="fas fa-calendar-plus" style="margin-left:4px;"></i>احجز الآن
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 7 -->
+          <div class="consultant-card" data-name="عمر الزهراني" data-price="140" data-rating="4.6" data-exp="9">
+            <div class="consultant-card-top">
+              <div class="consultant-avatar" style="background:linear-gradient(135deg,#FF6B6B,#EE4444);">د.ع</div>
+              <div class="consultant-info">
+                <h4>د. عمر الزهراني</h4>
+                <div class="consultant-specialty">طب نفسي وعلاجي</div>
+                <div class="consultant-exp"><i class="fas fa-briefcase" style="margin-left:4px;"></i>9 سنوات خبرة</div>
+              </div>
+              <div class="consultant-verified"><i class="fas fa-check"></i>معتمد</div>
+            </div>
+            <div class="consultant-card-body">
+              <div class="consultant-tags">
+                <span class="consultant-tag">الاكتئاب</span>
+                <span class="consultant-tag">الأرق</span>
+                <span class="consultant-tag">الإدمان</span>
+              </div>
+              <div class="consultant-meta">
+                <div class="consultant-rating"><i class="fas fa-star"></i> 4.6 <span style="color:var(--text-light);font-weight:400;">(98)</span></div>
+                <div class="consultant-sessions">180+ جلسة</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                <span class="consultant-price">140 ريال/جلسة</span>
+                <span style="font-size:0.8rem;color:var(--success);font-weight:600;"><span style="display:inline-block;width:8px;height:8px;background:var(--success);border-radius:50%;margin-left:4px;"></span>متاح الآن</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="consultant-card-btn" style="background:var(--bg-light);color:var(--primary);border:1.5px solid var(--border);" onclick="openConsultantModal(7)">
+                  <i class="fas fa-eye" style="margin-left:4px;"></i>الملف الشخصي
+                </button>
+                <button class="consultant-card-btn" onclick="window.location='booking.html?id=7'">
+                  <i class="fas fa-calendar-plus" style="margin-left:4px;"></i>احجز الآن
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 8 -->
+          <div class="consultant-card" data-name="منى الشريف" data-price="110" data-rating="4.8" data-exp="6">
+            <div class="consultant-card-top">
+              <div class="consultant-avatar" style="background:linear-gradient(135deg,#FFA500,#FF6347);">د.م</div>
+              <div class="consultant-info">
+                <h4>د. منى الشريف</h4>
+                <div class="consultant-specialty">إرشاد عائلي ومجتمعي</div>
+                <div class="consultant-exp"><i class="fas fa-briefcase" style="margin-left:4px;"></i>6 سنوات خبرة</div>
+              </div>
+              <div class="consultant-verified"><i class="fas fa-check"></i>معتمد</div>
+            </div>
+            <div class="consultant-card-body">
+              <div class="consultant-tags">
+                <span class="consultant-tag">الأسرة</span>
+                <span class="consultant-tag">التكيّف</span>
+                <span class="consultant-tag">الهجرة</span>
+              </div>
+              <div class="consultant-meta">
+                <div class="consultant-rating"><i class="fas fa-star"></i> 4.8 <span style="color:var(--text-light);font-weight:400;">(142)</span></div>
+                <div class="consultant-sessions">240+ جلسة</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                <span class="consultant-price">110 ريال/جلسة</span>
+                <span style="font-size:0.8rem;color:var(--success);font-weight:600;"><span style="display:inline-block;width:8px;height:8px;background:var(--success);border-radius:50%;margin-left:4px;"></span>متاحة الآن</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="consultant-card-btn" style="background:var(--bg-light);color:var(--primary);border:1.5px solid var(--border);" onclick="openConsultantModal(8)">
+                  <i class="fas fa-eye" style="margin-left:4px;"></i>الملف الشخصي
+                </button>
+                <button class="consultant-card-btn" onclick="window.location='booking.html?id=8'">
+                  <i class="fas fa-calendar-plus" style="margin-left:4px;"></i>احجز الآن
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end grid -->
+
+        <!-- Pagination -->
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:40px;">
+          <button style="width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:white;cursor:pointer;color:var(--text-medium);"><i class="fas fa-chevron-right"></i></button>
+          <button style="width:36px;height:36px;border-radius:8px;border:1.5px solid var(--primary);background:var(--primary);cursor:pointer;color:white;font-weight:700;">1</button>
+          <button style="width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:white;cursor:pointer;color:var(--text-medium);font-weight:600;">2</button>
+          <button style="width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:white;cursor:pointer;color:var(--text-medium);font-weight:600;">3</button>
+          <span style="color:var(--text-light);">...</span>
+          <button style="width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:white;cursor:pointer;color:var(--text-medium);font-weight:600;">9</button>
+          <button style="width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:white;cursor:pointer;color:var(--text-medium);"><i class="fas fa-chevron-left"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Consultant Profile Modal -->
+<div class="modal-overlay" id="consultantModal" onclick="if(event.target===this)closeConsultantModal()">
+  <div class="modal-box" id="consultantModalBox">
+    <div class="modal-header">
+      <h3 style="font-size:1.1rem;">الملف الشخصي للمستشار</h3>
+      <button class="modal-close" onclick="closeConsultantModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="consultantModalBody">
+      <!-- Dynamic content -->
+    </div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/js/all.min.js" defer></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+const consultantsData = [
+  { id:1, name:'د. محمد الخليل', initials:'د.م', specialty:'علم النفس الإكلينيكي', exp:12, rating:4.9, reviews:248, sessions:450, price:150, available:true, tags:['الاحتراق الوظيفي','الصدمات','القيادة','الإجهاد المزمن'], langs:['العربية','الإنجليزية'], about:'متخصص في علاج الصدمات النفسية والاحتراق الوظيفي لدى العاملين في القطاع الإنساني منذ أكثر من 12 عاماً. حاصل على شهادة الدكتوراه في علم النفس الإكلينيكي من جامعة مانشستر، ومعتمد من الجمعية الأمريكية لعلم النفس.', grad:'90,10,5' },
+  { id:2, name:'د. نور الحسيني', initials:'د.ن', specialty:'معالجة الصدمات', exp:8, rating:4.8, reviews:193, sessions:320, price:130, available:false, tags:['PTSD','القلق','الاكتئاب','الصدمة المعقدة'], langs:['العربية','الفرنسية'], about:'معالجة نفسية متخصصة في علاج اضطراب ما بعد الصدمة والقلق المزمن. عملت مع منظمات دولية كبرى في مناطق الأزمات خلال السنوات الثماني الماضية.', grad:'85,12,3' },
+  { id:3, name:'د. فيصل العمر', initials:'د.ف', specialty:'مستشار مهني وتنظيمي', exp:15, rating:5.0, reviews:312, sessions:600, price:200, available:true, tags:['القيادة','الفرق','الإدارة','الاستراتيجية'], langs:['العربية','الإنجليزية','الفرنسية'], about:'خبير في الاستشارات التنظيمية وتطوير القيادة في منظمات القطاع الإنساني. خدم في أكثر من 30 دولة وساعد مئات القادة الإنسانيين على بناء فرق عمل فعّالة ومستدامة.', grad:'95,4,1' },
+  { id:4, name:'د. سارة الأحمدي', initials:'د.س', specialty:'معالجة نفسية - صدمات', exp:10, rating:4.9, reviews:278, sessions:520, price:160, available:true, tags:['الصدمة المعقدة','الرحمة','المرونة','الحياة العاطفية'], langs:['العربية'], about:'معالجة نفسية متخصصة في الصدمة المعقدة والإرهاق الرحيم لدى العاملين في المجال الإنساني. حاصلة على شهادات دولية في علاج EMDR وبروتوكولات علاج الصدمة.', grad:'88,9,3' },
+];
+
+function openConsultantModal(id) {
+  const c = consultantsData.find(x => x.id === id) || consultantsData[0];
+  const gradParts = (c.grad || '80,15,5').split(',');
+  document.getElementById('consultantModalBody').innerHTML = `
+    <div class="Profile">
+      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-size:1.6rem;font-weight:700;flex-shrink:0;">${c.initials}</div>
+      <div style="flex:1; margin-top: 8px;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+          <h3 style="font-size:1.2rem;">${c.name}</h3>
+          <div style="background:var(--success);color:white;font-size:0.72rem;font-weight:700;padding:3px 10px;border-radius:50px;"><i class="fas fa-check" style="margin-left:3px;"></i>معتمد دولياً</div>
+        </div>
+        <div style="color:var(--primary);font-weight:600;font-size:0.9rem;margin-bottom:8px;">${c.specialty}</div>
+        <div style="display:flex;gap:20px;flex-wrap:wrap;">
+          <span style="font-size:0.82rem;color:var(--text-light);"><i class="fas fa-briefcase" style="margin-left:4px;color:var(--primary);"></i>${c.exp} سنوات خبرة</span>
+          <span style="font-size:0.82rem;color:var(--warning);font-weight:700;"><i class="fas fa-star" style="margin-left:4px;"></i>${c.rating} (${c.reviews} تقييم)</span>
+          <span style="font-size:0.82rem;color:var(--text-light);"><i class="fas fa-comments" style="margin-left:4px;color:var(--secondary);"></i>${c.sessions}+ جلسة</span>
+        </div>
+      </div>
+      <div style="text-align:center;flex-shrink:0;">
+        <div style="font-size:1.4rem;font-weight:800;color:var(--primary);">${c.price}</div>
+        <div style="font-size:0.75rem;color:var(--text-light);">ريال/جلسة</div>
+      </div>
+    </div>
+    
+    <div style="background:var(--bg-light);border-radius:var(--radius-md);padding:18px;margin-bottom:20px;">
+      <h4 style="font-size:0.9rem;margin-bottom:10px;">نبذة عن المستشار</h4>
+      <p style="font-size:0.87rem;color:var(--text-medium);">${c.about}</p>
+    </div>
+    
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;">
+      <div style="flex:1;min-width:200px;">
+        <h4 style="font-size:0.88rem;margin-bottom:10px;">مجالات التخصص</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          ${c.tags.map(t => `<span class="consultant-tag">${t}</span>`).join('')}
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size:0.88rem;margin-bottom:10px;">اللغات</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          ${c.langs.map(l => `<span style="background:var(--accent-green);color:var(--success);padding:4px 10px;border-radius:50px;font-size:0.78rem;font-weight:600;">${l}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+    
+    <div style="margin-bottom:20px;">
+      <h4 style="font-size:0.88rem;margin-bottom:14px;">توزيع التقييمات</h4>
+      <div class="rating-bar"><span class="rating-bar-label">★★★★★</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:${gradParts[0]}%;"></div></div><span class="rating-bar-num">${gradParts[0]}%</span></div>
+      <div class="rating-bar"><span class="rating-bar-label">★★★★</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:${gradParts[1]}%;"></div></div><span class="rating-bar-num">${gradParts[1]}%</span></div>
+      <div class="rating-bar"><span class="rating-bar-label">★★★</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:${gradParts[2]}%;"></div></div><span class="rating-bar-num">${gradParts[2]}%</span></div>
+    </div>
+    
+    <div style="display:flex;gap:12px;">
+      <button onclick="window.location='booking.html?id=${c.id}'" style="flex:2;padding:14px;background:var(--primary);color:white;border:none;border-radius:50px;font-weight:700;font-size:0.95rem;cursor:pointer;font-family:Cairo,sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <i class="fas fa-calendar-plus"></i> احجز جلسة الآن
+      </button>
+      <button onclick="closeConsultantModal()" style="flex:1;padding:14px;background:var(--bg-light);color:var(--text-medium);border:1.5px solid var(--border);border-radius:50px;font-weight:600;cursor:pointer;font-family:Cairo,sans-serif;">
+        إغلاق
+      </button>
+    </div>
+  `;
+  document.getElementById('consultantModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeConsultantModal() {
+  document.getElementById('consultantModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function setView(view, btn) {
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const list = document.getElementById('consultantsList');
+  if (view === 'list') list.classList.add('list-view');
+  else list.classList.remove('list-view');
+}
+
+function toggleFilter(el) {
+  const check = el.querySelector('.filter-check');
+  check.classList.toggle('active');
+  if (check.classList.contains('active')) check.innerHTML = '<i class="fas fa-check"></i>';
+  else check.innerHTML = '';
+}
+
+function resetFilters() {
+  document.querySelectorAll('.filter-check').forEach(c => {
+    c.classList.remove('active');
+    c.innerHTML = '';
+  });
+}
+
+function filterConsultants(q) {
+  const cards = document.querySelectorAll('.consultant-card');
+  const query = q.toLowerCase();
+  let count = 0;
+  cards.forEach(card => {
+    const name = card.getAttribute('data-name')?.toLowerCase() || '';
+    const show = !query || name.includes(query);
+    card.style.display = show ? '' : 'none';
+    if (show) count++;
+  });
+  document.getElementById('resultsCount').innerHTML = `عرض <strong>${count}</strong> من <strong>85</strong> مستشار`;
+}
+
+function sortConsultants(val) {
+  const list = document.getElementById('consultantsList');
+  const cards = [...list.querySelectorAll('.consultant-card')];
+  cards.sort((a,b) => {
+    if (val === 'rating') return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+    if (val === 'price-low') return parseInt(a.dataset.price) - parseInt(b.dataset.price);
+    if (val === 'price-high') return parseInt(b.dataset.price) - parseInt(a.dataset.price);
+    if (val === 'experience') return parseInt(b.dataset.exp) - parseInt(a.dataset.exp);
+    return 0;
+  });
+  cards.forEach(c => list.appendChild(c));
+}
+</script>
+</body>
+</html>

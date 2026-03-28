@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تواصل معنا | منصة صفحة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .contact-grid { display:grid; grid-template-columns:1fr 1.5fr; gap:48px; align-items:flex-start; }
+    .contact-info-card { background:linear-gradient(145deg,var(--primary-dark),var(--primary) 60%,var(--secondary-dark)); border-radius:var(--radius-lg); padding:40px; color:white; position:sticky; top:92px; }
+    .contact-info-card h3 { color:white; margin-bottom:8px; }
+    .contact-info-card p { color:rgba(255,255,255,0.8); font-size:0.9rem; margin-bottom:32px; }
+    .contact-info-item { display:flex; gap:14px; margin-bottom:24px; }
+    .ci-icon { width:44px; height:44px; border-radius:10px; background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; color:white; font-size:1rem; flex-shrink:0; }
+    .ci-text strong { display:block; font-size:0.88rem; color:white; margin-bottom:2px; }
+    .ci-text span { font-size:0.82rem; color:rgba(255,255,255,0.7); }
+    .ci-text a { color:rgba(255,255,255,0.9); font-size:0.85rem; font-weight:600; }
+    .contact-social { display:flex; gap:10px; margin-top:28px; }
+    .cs-link { width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.8); font-size:0.9rem; transition:var(--transition); }
+    .cs-link:hover { background:rgba(255,255,255,0.25); color:white; transform:translateY(-2px); }
+    
+    .contact-form-card { background:white; border-radius:var(--radius-lg); border:1px solid var(--border); padding:40px; }
+    .contact-type-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:24px; }
+    .contact-type-btn { border:2px solid var(--border); border-radius:var(--radius-sm); padding:14px 10px; text-align:center; cursor:pointer; transition:var(--transition); background:white; font-family:var(--font-main); }
+    .contact-type-btn:hover, .contact-type-btn.selected { border-color:var(--primary); background:var(--accent); }
+    .contact-type-btn i { display:block; font-size:1.3rem; color:var(--primary); margin-bottom:6px; }
+    .contact-type-btn span { font-size:0.78rem; font-weight:700; color:var(--text-dark); }
+    .contact-type-btn.selected span { color:var(--primary); }
+    
+    .faq-item { border-bottom:1px solid var(--border); }
+    .faq-question { padding:16px 0; display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-weight:600; font-size:0.9rem; color:var(--text-dark); }
+    .faq-icon { color:var(--primary); transition:var(--transition); font-size:0.8rem; }
+    .faq-answer { max-height:0; overflow:hidden; transition:max-height 0.4s ease; }
+    .faq-answer-inner { padding:0 0 16px; font-size:0.85rem; color:var(--text-medium); line-height:1.7; }
+    .faq-item.open .faq-icon { transform:rotate(180deg); }
+    .faq-item.open .faq-answer { max-height:200px; }
+
+    .emergency-banner { background:linear-gradient(135deg,var(--danger),#C0392B); border-radius:var(--radius-md); padding:20px 24px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:28px; }
+    .emergency-banner i { font-size:1.5rem; color:white; flex-shrink:0; }
+    .emergency-banner-text strong { display:block; color:white; font-size:0.95rem; margin-bottom:2px; }
+    .emergency-banner-text span { font-size:0.82rem; color:rgba(255,255,255,0.85); }
+    .emergency-call { background:rgba(255,255,255,0.2); color:white; padding:8px 20px; border-radius:50px; font-weight:700; font-size:0.88rem; border:1px solid rgba(255,255,255,0.3); margin-right:auto; white-space:nowrap; }
+    
+    @media (max-width:991px) { .contact-grid { grid-template-columns:1fr; } .contact-info-card { position:static; padding-right:14px;} }
+    @media (max-width:576px) { .contact-type-grid { grid-template-columns:1fr 1fr; } .contact-form-card { padding:24px; } }
+  </style>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="page-hero">
+  <div class="container-custom">
+    <div class="page-hero-content">
+      <div class="breadcrumb-custom">
+        <a href="index.html">الرئيسية</a>
+        <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+        <span>تواصل معنا</span>
+      </div>
+      <h1 style="font-size:1.8rem;margin-bottom:8px;">نحن <span style="color:var(--primary);">هنا</span> من أجلك</h1>
+      <p style="font-size:0.9rem;color:var(--text-medium);">تواصل معنا في أي وقت - فريقنا دائماً مستعد للمساعدة</p>
+    </div>
+  </div>
+</div>
+
+<section style="padding:60px 0 80px;background:var(--bg-light);">
+  <div class="container-custom">
+    
+    <!-- Emergency Banner -->
+    <div class="emergency-banner">
+      <i class="fas fa-exclamation-triangle"></i>
+      <div class="emergency-banner-text">
+        <strong>هل أنت في أزمة نفسية؟</strong>
+        <span>إذا كنت تمر بأزمة أو لديك أفكار إيذاء، تواصل فوراً مع خط الدعم النفسي الطارئ</span>
+      </div>
+      <a href="tel:920000000" class="emergency-call">
+        <i class="fas fa-phone" style="margin-left:6px;"></i>٩٢٠-٠٠٠-٠٠٠
+      </a>
+    </div>
+
+    <div class="contact-grid">
+      <!-- Info Side -->
+      <div>
+        <div class="contact-info-card">
+          <h3>كيف يمكننا مساعدتك؟</h3>
+          <p>فريق صفحة متاح دائماً للإجابة عن استفساراتك ودعمك في رحلتك.</p>
+          
+          <div class="contact-info-item">
+            <div class="ci-icon"><i class="fas fa-envelope"></i></div>
+            <div class="ci-text">
+              <strong>البريد الإلكتروني</strong>
+              <a href="mailto:support@safha.care">support@safha.care</a>
+              <span>نرد خلال ٢٤ ساعة</span>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="ci-icon"><i class="fas fa-phone"></i></div>
+            <div class="ci-text">
+              <strong>هاتف الدعم</strong>
+              <a href="tel:+966920000000">٩٢٠-٠٠٠-٠٠٠</a>
+              <span>الأحد - الخميس، ٨ ص - ١٠ م</span>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="ci-icon"><i class="fab fa-whatsapp"></i></div>
+            <div class="ci-text">
+              <strong>واتساب</strong>
+              <a href="#">+966 55 000 0000</a>
+              <span>متاح طوال الأسبوع</span>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="ci-icon"><i class="fas fa-building"></i></div>
+            <div class="ci-text">
+              <strong>للمنظمات والشراكات</strong>
+              <a href="mailto:partners@safha.care">partners@safha.care</a>
+              <span>فريق متخصص للمؤسسات</span>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="ci-icon"><i class="fas fa-clock"></i></div>
+            <div class="ci-text">
+              <strong>خط الطوارئ النفسية</strong>
+              <a href="tel:800000000">٨٠٠-٠٠٠-٠٠٠</a>
+              <span>متاح ٢٤/٧ مجاناً</span>
+            </div>
+          </div>
+          
+          <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:24px;margin-top:8px;">
+            <div style="font-size:0.82rem;color:rgba(255,255,255,0.7);margin-bottom:12px;">تابعنا على:</div>
+            <div class="contact-social">
+              <a href="#" class="cs-link"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="cs-link"><i class="fab fa-linkedin"></i></a>
+              <a href="#" class="cs-link"><i class="fab fa-instagram"></i></a>
+              <a href="#" class="cs-link"><i class="fab fa-facebook"></i></a>
+              <a href="#" class="cs-link"><i class="fab fa-youtube"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Side -->
+      <div>
+        <div class="contact-form-card">
+          <h3 style="margin-bottom:8px;">أرسل لنا رسالة</h3>
+          <p style="font-size:0.9rem;color:var(--text-light);margin-bottom:28px;">سنرد عليك في أقرب وقت ممكن. استفساراتك مهمة لنا.</p>
+
+          <!-- Contact Type -->
+          <div style="font-size:0.88rem;font-weight:700;color:var(--text-dark);margin-bottom:12px;">موضوع تواصلك:</div>
+          <div class="contact-type-grid">
+            <button class="contact-type-btn selected" onclick="selectType(this)">
+              <i class="fas fa-question-circle"></i>
+              <span>استفسار عام</span>
+            </button>
+            <button class="contact-type-btn" onclick="selectType(this)">
+              <i class="fas fa-user-md"></i>
+              <span>دعم نفسي</span>
+            </button>
+            <button class="contact-type-btn" onclick="selectType(this)">
+              <i class="fas fa-building"></i>
+              <span>حلول مؤسسية</span>
+            </button>
+            <button class="contact-type-btn" onclick="selectType(this)">
+              <i class="fas fa-handshake"></i>
+              <span>شراكات</span>
+            </button>
+            <button class="contact-type-btn" onclick="selectType(this)">
+              <i class="fas fa-bug"></i>
+              <span>مشكلة تقنية</span>
+            </button>
+            <button class="contact-type-btn" onclick="selectType(this)">
+              <i class="fas fa-star"></i>
+              <span>اقتراح</span>
+            </button>
+          </div>
+
+          <form id="contactForm" onsubmit="submitContact(event)">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div class="form-group">
+                <label class="form-label">الاسم الكامل <span>*</span></label>
+                <input type="text" class="form-control-custom" placeholder="اسمك الكامل" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">البريد الإلكتروني <span>*</span></label>
+                <input type="email" class="form-control-custom" placeholder="example@email.com" required />
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div class="form-group">
+                <label class="form-label">رقم الهاتف</label>
+                <input type="tel" class="form-control-custom" placeholder="+966 5X XXX XXXX" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">اسم المنظمة (إن وجدت)</label>
+                <input type="text" class="form-control-custom" placeholder="اسم المنظمة أو الجهة" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">الموضوع <span>*</span></label>
+              <input type="text" class="form-control-custom" placeholder="موضوع رسالتك بإيجاز" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">رسالتك <span>*</span></label>
+              <textarea class="form-control-custom" placeholder="اكتب رسالتك هنا... كلما كانت تفاصيلك أكثر، كان ردنا أدق وأسرع." rows="5" required style="resize:vertical;"></textarea>
+            </div>
+            
+            <!-- Privacy -->
+            <div style="background:var(--accent);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+              <i class="fas fa-lock" style="color:var(--primary);flex-shrink:0;"></i>
+              <span style="font-size:0.8rem;color:var(--primary);font-weight:600;">رسالتك محمية وسرية. نلتزم بعدم مشاركة أي معلومات شخصية مع أطراف ثالثة.</span>
+            </div>
+
+            <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;">
+              <div class="checkbox-custom" id="privacyCheck" onclick="this.classList.toggle('checked')" style="width:18px;height:18px;border:2px solid var(--border);border-radius:4px;cursor:pointer;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:var(--transition);"></div>
+              <span style="font-size:0.83rem;color:var(--text-medium);">أوافق على <a href="#" style="color:var(--primary);font-weight:600;">سياسة الخصوصية</a> وأن يتواصل معي فريق صفحة للرد على رسالتي</span>
+            </div>
+
+            <button type="submit" class="btn-primary-custom" style="width:100%;justify-content:center;padding:14px;font-size:0.95rem;">
+              <i class="fas fa-paper-plane"></i>
+              إرسال الرسالة
+            </button>
+          </form>
+        </div>
+
+        <!-- FAQ -->
+        <div style="background:white;border-radius:var(--radius-lg);border:1px solid var(--border);padding:32px;margin-top:24px;">
+          <h3 style="margin-bottom:24px;font-size:1.1rem;">الأسئلة الشائعة</h3>
+          
+          <div class="faq-item open">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>هل الجلسات سرية تماماً؟</span>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">نعم، الجلسات محمية بتشفير عالي المستوى (256-bit SSL). لا يمكن لأي طرف ثالث الاطلاع عليها، بما في ذلك فريق المنصة نفسه. حتى في حال الباقات المؤسسية، تُقدّم التقارير بشكل مجمّع مجهول الهوية.</div>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>كيف أختار المستشار المناسب لي؟</span>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">ننصحك بإجراء التقييم النفسي المجاني أولاً، حيث يساعدنا في توصية المستشار الأنسب لاحتياجاتك. يمكنك أيضاً تصفح صفحات المستشارين واختيار من يناسبك بناءً على التخصص والتقييمات والأسعار.</div>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>ما هي تكلفة الجلسة؟</span>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">تتراوح أسعار الجلسات بين ١١٠ و٢٠٠ ريال للجلسة (٥٠ دقيقة) حسب المستشار. الجلسة الأولى مجانية تقريباً لجميع المستخدمين الجدد. للمنظمات، نقدم باقات مؤسسية بأسعار خاصة.</div>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>هل يمكنني إلغاء الموعد؟</span>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">نعم، يمكنك إلغاء أو تأجيل الموعد مجاناً إذا تم قبل ٢٤ ساعة من موعد الجلسة. في حال الإلغاء المتأخر، قد يُطبق رسم رمزي. يمكن الإلغاء من لوحة التحكم الخاصة بك.</div>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>هل المنصة مخصصة للعرب فقط؟</span>
+              <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">لا، المنصة تخدم جميع العاملين في القطاع الإنساني حول العالم. لدينا مستشارون يتحدثون العربية، الإنجليزية، الفرنسية، وعدة لغات أخرى. يمكنك الاستفادة من خدماتنا بغض النظر عن جنسيتك أو لغتك.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+<script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/js/all.min.js" defer></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+function selectType(btn) {
+  document.querySelectorAll('.contact-type-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function toggleFaq(el) {
+  const item = el.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+function submitContact(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  const privacyCheck = document.getElementById('privacyCheck');
+  
+  if (!privacyCheck.classList.contains('checked')) {
+    if (window.showToast) window.showToast('يرجى الموافقة على سياسة الخصوصية', 'warning');
+    return;
+  }
+  
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ الإرسال...';
+  btn.disabled = true;
+  
+  setTimeout(() => {
+    // Show success
+    e.target.innerHTML = `
+      <div style="text-align:center;padding:40px 20px;">
+        <div style="font-size:3rem;margin-bottom:16px;">✅</div>
+        <h3 style="color:var(--success);margin-bottom:10px;">تم إرسال رسالتك بنجاح!</h3>
+        <p style="color:var(--text-medium);font-size:0.9rem;margin-bottom:20px;">سيتواصل معك فريقنا خلال ٢٤ ساعة على البريد الإلكتروني الذي أدخلته.</p>
+        <p style="font-size:0.85rem;color:var(--text-light);">رقم الطلب: <strong style="color:var(--primary);">#REQ-2025-1847</strong></p>
+        <a href="index.html" class="btn-primary-custom" style="margin:20px auto 0;display:inline-flex;">العودة للرئيسية</a>
+      </div>
+    `;
+  }, 2000);
+}
+</script>
+</body>
+</html>

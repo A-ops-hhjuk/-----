@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حجز موعد | منصة صفحة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .booking-page { padding: 60px 0; background: var(--bg-light); min-height: calc(100vh - 72px); }
+    .booking-grid { display: grid; grid-template-columns: 1fr 380px; gap: 28px; align-items: start; }
+    .booking-steps { display: flex; align-items: center; gap: 0;flex-wrap: wrap; margin-bottom: 32px;}
+    .booking-step { display: flex; align-items: center; gap: 10px; }
+    .step-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; border: 2px solid var(--border); background: white; color: var(--text-light); flex-shrink: 0; transition: var(--transition); }
+    .step-circle.active { background: var(--primary); border-color: var(--primary); color: white; }
+    .step-circle.done { background: var(--secondary); border-color: var(--secondary); color: white; }
+    .step-label { font-size: 0.82rem; font-weight: 600; color: var(--text-light); white-space: nowrap; }
+    .step-label.active { color: var(--primary); }
+    .step-separator { flex: 1; height: 2px; background: var(--border); margin: 0 12px; min-width: 30px; }
+    .step-separator.done { background: var(--secondary); }
+
+    .booking-section { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 28px; margin-bottom: 20px; }
+    .booking-section-title { font-size: 1rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .booking-section-title i { color: var(--primary); }
+
+    .session-type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .session-type-card { border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; cursor: pointer; transition: var(--transition); }
+    .session-type-card:hover, .session-type-card.selected { border-color: var(--primary); background: var(--accent); }
+    .session-type-icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .session-type-name { font-size: 0.88rem; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+    .session-type-desc { font-size: 0.75rem; color: var(--text-light); }
+    .session-type-card.selected .session-type-name { color: var(--primary); }
+
+    .booking-summary { background: white; border-radius: var(--radius-md); border: 1px solid var(--border); position: sticky; top: 92px; overflow: hidden; }
+    .summary-header { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 20px; color: white; }
+    .summary-header h4 { color: white; margin-bottom: 4px; }
+    .summary-body { padding: 20px; }
+    .summary-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--bg-light); }
+    .summary-item:last-child { border-bottom: none; }
+    .summary-item-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--accent); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+    .summary-item-info strong { display: block; font-size: 0.85rem; color: var(--text-dark); }
+    .summary-item-info span { font-size: 0.78rem; color: var(--text-light); }
+    .summary-price { padding: 16px; border-top: 1px solid var(--border); }
+    .price-breakdown { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .price-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+    .price-row span { color: var(--text-medium); }
+    .price-row strong { font-weight: 700; }
+    .price-total { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--border); }
+    .price-total span { font-weight: 700; font-size: 0.95rem; }
+    .price-total strong { font-size: 1.3rem; color: var(--primary); font-weight: 800; }
+
+    .time-slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+
+    .payment-methods { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .payment-method { border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 14px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 10px; }
+    .payment-method.selected { border-color: var(--primary); background: var(--accent); }
+    .payment-method i { font-size: 1.2rem; color: var(--text-medium); }
+    .payment-method.selected i { color: var(--primary); }
+    .payment-method span { font-size: 0.85rem; font-weight: 600; }
+
+    .card-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .card-form .full { grid-column: 1 / -1; }
+
+    .success-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 9999; }
+    .success-box { background: white; border-radius: var(--radius-lg); padding: 48px; text-align: center; max-width: 480px; width: 90%; animation: fadeIn 0.4s ease; }
+
+    @media (max-width: 991px) {
+      .booking-grid { grid-template-columns: 1fr; }
+      .booking-summary { position: static; }
+    }
+    @media (max-width: 576px) {
+      .session-type-grid { grid-template-columns: 1fr; }
+      .time-slots-grid { grid-template-columns: repeat(3, 1fr); }
+      .payment-methods { grid-template-columns: 1fr; }
+      .card-form { grid-template-columns: 1fr; }
+      .booking-steps{
+        gap: 10px;
+      }
+      .calendar-day-header{
+      font-size: 9px;
+    }
+    .consultant{
+      flex-direction: column;
+    }
+    }
+  </style>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="page-hero">
+  <div class="container-custom">
+    <div class="page-hero-content">
+      <div class="breadcrumb-custom">
+        <a href="index.html">الرئيسية</a>
+        <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+        <a href="consultants.html">المستشارون</a>
+        <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+        <span>حجز موعد</span>
+      </div>
+      <h1 style="font-size:1.8rem;margin-bottom:8px;">احجز <span style="color:var(--primary);">جلستك</span> الآن</h1>
+      <p style="font-size:0.9rem;color:var(--text-medium);">الجلسة مشفرة وسرية بالكامل</p>
+    </div>
+  </div>
+</div>
+
+<div class="booking-page">
+  <div class="container-custom">
+    
+    <!-- Steps -->
+    <div class="booking-steps">
+      <div class="booking-step">
+        <div class="step-circle done" id="s1"><i class="fas fa-check" style="font-size:0.75rem;"></i></div>
+        <span class="step-label active" id="sl1">اختر المستشار</span>
+      </div>
+      <div class="step-separator done" id="sep1"></div>
+      <div class="booking-step">
+        <div class="step-circle active" id="s2">٢</div>
+        <span class="step-label active" id="sl2">الوقت والنوع</span>
+      </div>
+      <div class="step-separator" id="sep2"></div>
+      <div class="booking-step">
+        <div class="step-circle" id="s3">٣</div>
+        <span class="step-label" id="sl3">الدفع</span>
+      </div>
+      <div class="step-separator" id="sep3"></div>
+      <div class="booking-step">
+        <div class="step-circle" id="s4">٤</div>
+        <span class="step-label" id="sl4">التأكيد</span>
+      </div>
+    </div>
+
+    <div class="booking-grid">
+      <!-- Main Content -->
+      <div>
+
+        <!-- Consultant Info -->
+        <div class="booking-section">
+          <div class="booking-section-title">
+            <i class="fas fa-user-md"></i>
+            المستشار المختار
+            <a href="consultants.html" style="margin-right:auto;font-size:0.8rem;color:var(--primary);font-weight:600;">تغيير <i class="fas fa-arrows-alt" style="font-size:0.75rem;"></i></a>
+          </div>
+          <div class="consultant" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-size:1.4rem;font-weight:700;flex-shrink:0;">د.م</div>
+            <div style="flex:1;">
+              <h3 style="margin-bottom:4px;font-size:1.1rem;">د. محمد الخليل</h3>
+              <div style="color:var(--primary);font-size:0.85rem;font-weight:600;margin-bottom:6px;">علم النفس الإكلينيكي - متخصص في الاحتراق الوظيفي</div>
+              <div style="display:flex;gap:16px;flex-wrap:wrap;">
+                <span style="font-size:0.8rem;color:var(--warning);font-weight:700;"><i class="fas fa-star" style="margin-left:3px;"></i>4.9 (248 تقييم)</span>
+                <span style="font-size:0.8rem;color:var(--success);font-weight:600;"><span style="display:inline-block;width:7px;height:7px;background:var(--success);border-radius:50%;margin-left:4px;"></span>متاح الآن</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;text-align:center;">
+              <div style="font-size:1.4rem;font-weight:800;color:var(--primary);">150</div>
+              <div style="font-size:0.75rem;color:var(--text-light);">ريال/جلسة</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Session Type -->
+        <div class="booking-section">
+          <div class="booking-section-title"><i class="fas fa-video"></i>نوع الجلسة</div>
+          <div class="session-type-grid">
+            <div class="session-type-card selected" onclick="selectSessionType(this,'video')">
+              <div class="session-type-icon">🎥</div>
+              <div class="session-type-name">مرئية (فيديو)</div>
+              <div class="session-type-desc">التفاعل الأكثر فاعلية</div>
+            </div>
+            <div class="session-type-card" onclick="selectSessionType(this,'audio')">
+              <div class="session-type-icon">🎙️</div>
+              <div class="session-type-name">صوتية فقط</div>
+              <div class="session-type-desc">إذا فضّلت عدم الظهور</div>
+            </div>
+            <div class="session-type-card" onclick="selectSessionType(this,'chat')">
+              <div class="session-type-icon">💬</div>
+              <div class="session-type-name">محادثة نصية</div>
+              <div class="session-type-desc">خصوصية أكبر</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Duration -->
+        <div class="booking-section">
+          <div class="booking-section-title"><i class="fas fa-clock"></i>مدة الجلسة</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div style="border:2px solid var(--primary);border-radius:var(--radius-sm);padding:14px 20px;cursor:pointer;background:var(--accent);" onclick="selectDuration(this, 50, 150)">
+              <div style="font-weight:700;color:var(--primary);font-size:0.95rem;">٥٠ دقيقة</div>
+              <div style="font-size:0.78rem;color:var(--text-light);">الجلسة القياسية</div>
+              <div style="font-size:0.9rem;font-weight:700;color:var(--text-dark);margin-top:4px;">١٥٠ ريال</div>
+            </div>
+            <div style="border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px 20px;cursor:pointer;" onclick="selectDuration(this, 80, 220)">
+              <div style="font-weight:700;color:var(--text-dark);font-size:0.95rem;">٨٠ دقيقة</div>
+              <div style="font-size:0.78rem;color:var(--text-light);">جلسة موسّعة</div>
+              <div style="font-size:0.9rem;font-weight:700;color:var(--text-dark);margin-top:4px;">٢٢٠ ريال</div>
+            </div>
+            <div style="border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px 20px;cursor:pointer;" onclick="selectDuration(this, 25, 85)">
+              <div style="font-weight:700;color:var(--text-dark);font-size:0.95rem;">٢٥ دقيقة</div>
+              <div style="font-size:0.78rem;color:var(--text-light);">جلسة مختصرة</div>
+              <div style="font-size:0.9rem;font-weight:700;color:var(--text-dark);margin-top:4px;">٨٥ ريال</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="booking-section" style="padding-inline: 0;background: inherit;border: none;">
+          <div class="booking-section-title"><i class="fas fa-calendar-alt"></i>اختر التاريخ</div>
+          <div class="booking-calendar" id="mainCalendar"></div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;">
+            <div style="display:flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--text-light);">
+              <span style="width:10px;height:10px;background:var(--secondary);border-radius:50%;"></span>مواعيد متاحة
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--text-light);">
+              <span style="width:10px;height:10px;background:var(--primary);border-radius:50%;"></span>التاريخ المحدد
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--text-light);">
+              <span style="width:10px;height:10px;background:var(--border);border-radius:50%;"></span>غير متاح
+            </div>
+          </div>
+        </div>
+
+        <!-- Time Slots -->
+        <div class="booking-section">
+          <div class="booking-section-title"><i class="fas fa-clock"></i>اختر الوقت المناسب</div>
+          <div style="margin-bottom:12px;">
+            <div style="font-size:0.82rem;color:var(--text-light);margin-bottom:12px;">الأوقات المتاحة ليوم الأربعاء ٢٦ مارس ٢٠٢٥:</div>
+            <div class="time-slots-grid" id="timeSlots">
+              <div class="time-slot" onclick="selectTime(this)">٨:٠٠ ص</div>
+              <div class="time-slot" onclick="selectTime(this)">٩:٠٠ ص</div>
+              <div class="time-slot unavailable">١٠:٠٠ ص</div>
+              <div class="time-slot" onclick="selectTime(this)">١١:٠٠ ص</div>
+              <div class="time-slot unavailable">١٢:٠٠ م</div>
+              <div class="time-slot" onclick="selectTime(this)">١:٠٠ م</div>
+              <div class="time-slot" onclick="selectTime(this)">٢:٠٠ م</div>
+              <div class="time-slot unavailable">٣:٠٠ م</div>
+              <div class="time-slot" onclick="selectTime(this)">٤:٠٠ م</div>
+              <div class="time-slot" onclick="selectTime(this)">٥:٠٠ م</div>
+              <div class="time-slot unavailable">٦:٠٠ م</div>
+              <div class="time-slot" onclick="selectTime(this)">٧:٠٠ م</div>
+            </div>
+          </div>
+          <div style="font-size:0.8rem;color:var(--text-light);display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-info-circle" style="color:var(--primary);"></i>
+            المواقيت بحسب توقيت السعودية (GMT+3). يمكنك تغيير المنطقة الزمنية من الإعدادات.
+          </div>
+        </div>
+
+        <!-- Session Notes -->
+        <div class="booking-section">
+          <div class="booking-section-title"><i class="fas fa-sticky-note"></i>ملاحظات للمستشار (اختياري)</div>
+          <textarea class="form-control-custom" placeholder="يمكنك مشاركة ما تودّ التحدث عنه في الجلسة لمساعدة المستشار على التحضير المسبق..." rows="4" style="resize:vertical;"></textarea>
+          <div style="font-size:0.78rem;color:var(--text-light);margin-top:6px;display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-lock" style="color:var(--primary);"></i>
+            هذه الملاحظات مشفرة ولن يطّلع عليها إلا المستشار المختار
+          </div>
+        </div>
+
+        <!-- Payment -->
+        <div class="booking-section">
+          <div class="booking-section-title"><i class="fas fa-credit-card"></i>طريقة الدفع</div>
+          <div class="payment-methods">
+            <div class="payment-method selected" onclick="selectPayment(this)">
+              <i class="fas fa-credit-card"></i>
+              <span>بطاقة ائتمان/خصم</span>
+            </div>
+            <div class="payment-method" onclick="selectPayment(this)">
+              <i class="fas fa-university"></i>
+              <span>تحويل بنكي</span>
+            </div>
+            <div class="payment-method" onclick="selectPayment(this)">
+              <i class="fab fa-apple-pay" style="font-size:1.5rem;"></i>
+              <span>Apple Pay</span>
+            </div>
+            <div class="payment-method" onclick="selectPayment(this)">
+              <i class="fas fa-mobile-alt"></i>
+              <span>مدى</span>
+            </div>
+          </div>
+
+          <div id="cardForm" style="margin-top:20px;">
+            <div class="card-form">
+              <div class="form-group full">
+                <label class="form-label">رقم البطاقة</label>
+                <div style="position:relative;">
+                  <i class="fas fa-credit-card" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-light);"></i>
+                  <input type="text" class="form-control-custom" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCard(this)" style="padding-right:42px;" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">تاريخ الانتهاء</label>
+                <input type="text" class="form-control-custom" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">CVV</label>
+                <div style="position:relative;">
+                  <input type="password" class="form-control-custom" placeholder="•••" maxlength="4" />
+                  <i class="fas fa-question-circle" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-light);cursor:help;" title="الرقم السري خلف البطاقة"></i>
+                </div>
+              </div>
+              <div class="form-group full">
+                <label class="form-label">اسم حامل البطاقة</label>
+                <input type="text" class="form-control-custom" placeholder="كما هو مكتوب على البطاقة" />
+              </div>
+            </div>
+          </div>
+
+          <div style="background:var(--accent-green);border-radius:var(--radius-sm);padding:12px 16px;margin-top:16px;display:flex;align-items:center;gap:10px;">
+            <i class="fas fa-shield-alt" style="color:var(--success);"></i>
+            <span style="font-size:0.82rem;color:var(--success);font-weight:600;">مدفوعاتك محمية بتشفير SSL 256-bit</span>
+          </div>
+        </div>
+
+        <!-- Confirm Button -->
+        <button onclick="confirmBooking()" style="width:100%;padding:16px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;border:none;border-radius:50px;font-size:1.05rem;font-weight:700;cursor:pointer;font-family:Cairo,sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;transition:var(--transition);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+          <i class="fas fa-check-circle"></i>
+          تأكيد الحجز ودفع ١٥٠ ريال
+        </button>
+      </div>
+
+      <!-- Booking Summary -->
+      <div class="booking-summary">
+        <div class="summary-header">
+          <h4>ملخص الحجز</h4>
+          <p style="font-size:0.82rem;color:rgba(255,255,255,0.8);margin-top:4px;">مراجعة تفاصيل جلستك</p>
+        </div>
+        <div class="summary-body">
+          <div class="summary-item">
+            <div class="summary-item-icon"><i class="fas fa-user-md"></i></div>
+            <div class="summary-item-info">
+              <strong>د. محمد الخليل</strong>
+              <span>علم النفس الإكلينيكي</span>
+            </div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-item-icon"><i class="fas fa-video"></i></div>
+            <div class="summary-item-info">
+              <strong id="sumSessionType">جلسة مرئية (فيديو)</strong>
+              <span>عبر تطبيق المنصة</span>
+            </div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-item-icon"><i class="fas fa-calendar"></i></div>
+            <div class="summary-item-info">
+              <strong id="sumDate">لم يتم الاختيار بعد</strong>
+              <span>التاريخ المحدد</span>
+            </div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-item-icon"><i class="fas fa-clock"></i></div>
+            <div class="summary-item-info">
+              <strong id="sumTime">لم يتم الاختيار بعد</strong>
+              <span id="sumDuration">٥٠ دقيقة</span>
+            </div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-item-icon" style="background:var(--accent-green);color:var(--success);"><i class="fas fa-shield-alt"></i></div>
+            <div class="summary-item-info">
+              <strong>جلسة مشفرة</strong>
+              <span>سرية تامة مضمونة</span>
+            </div>
+          </div>
+        </div>
+        <div class="summary-price">
+          <div class="price-breakdown">
+            <div class="price-row">
+              <span>سعر الجلسة (٥٠ دقيقة)</span>
+              <strong id="sumBasePrice">١٥٠ ريال</strong>
+            </div>
+            <div class="price-row">
+              <span>رسوم المنصة</span>
+              <strong>١٠ ريال</strong>
+            </div>
+            <div class="price-row" style="color:var(--success);">
+              <span>خصم الجلسة الأولى</span>
+              <strong style="color:var(--success);">-١٥٠ ريال</strong>
+            </div>
+          </div>
+          <div class="price-total">
+            <span>الإجمالي</span>
+            <strong id="sumTotal">١٠ ريال</strong>
+          </div>
+          <div style="background:var(--accent-green);border-radius:var(--radius-sm);padding:10px;margin-top:12px;text-align:center;">
+            <span style="font-size:0.8rem;font-weight:700;color:var(--success);">🎁 الجلسة الأولى مجانية تقريباً!</span>
+          </div>
+        </div>
+
+        <!-- Trust Signals -->
+        <div style="padding:16px;border-top:1px solid var(--border);">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--text-light);">
+              <i class="fas fa-undo" style="color:var(--primary);"></i>
+              إلغاء مجاني قبل 24 ساعة
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--text-light);">
+              <i class="fas fa-lock" style="color:var(--primary);"></i>
+              دفع آمن ومشفر
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--text-light);">
+              <i class="fas fa-certificate" style="color:var(--primary);"></i>
+              مستشار معتمد ومرخّص
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <div style="width:80px;height:80px;border-radius:50%;background:var(--accent-green);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.5rem;">✅</div>
+    <h2 style="margin-bottom:10px;color:var(--success);">تم تأكيد حجزك!</h2>
+    <p style="color:var(--text-medium);font-size:0.9rem;margin-bottom:8px;">تم إرسال تفاصيل الجلسة إلى بريدك الإلكتروني</p>
+    <div style="background:var(--bg-light);border-radius:var(--radius-sm);padding:16px;margin:20px 0;text-align:right;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.85rem;">
+        <span style="color:var(--text-light);">المستشار</span>
+        <strong>د. محمد الخليل</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.85rem;">
+        <span style="color:var(--text-light);">التاريخ</span>
+        <strong id="confirmDate">-</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
+        <span style="color:var(--text-light);">رقم الحجز</span>
+        <strong style="color:var(--primary);">#SAF-2025-0892</strong>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <a href="dashboard-user.html" style="padding:14px;background:var(--primary);color:white;border-radius:50px;font-weight:700;display:block;text-decoration:none;">
+        <i class="fas fa-tachometer-alt" style="margin-left:6px;"></i>
+        الذهاب للوحة التحكم
+      </a>
+      <a href="index.html" style="padding:14px;background:var(--bg-light);color:var(--text-medium);border-radius:50px;font-weight:600;display:block;text-decoration:none;">
+        العودة للرئيسية
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/js/all.min.js" defer></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+let selectedDate = null, selectedTime = null, sessionDuration = 50, basePrice = 150;
+
+// Init Calendar
+document.addEventListener('DOMContentLoaded', () => {
+  initCalendar('mainCalendar');
+  document.getElementById('mainCalendar').addEventListener('dateSelected', (e) => {
+    selectedDate = e.detail.date;
+    const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+    const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    document.getElementById('sumDate').textContent = `${days[selectedDate.getDay()]} ${selectedDate.getDate()} ${months[selectedDate.getMonth()]}`;
+  });
+});
+
+function selectSessionType(el, type) {
+  document.querySelectorAll('.session-type-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const types = { video:'جلسة مرئية (فيديو)', audio:'جلسة صوتية', chat:'محادثة نصية' };
+  document.getElementById('sumSessionType').textContent = types[type];
+}
+
+function selectDuration(el, mins, price) {
+  document.querySelectorAll('[onclick^="selectDuration"]').forEach(c => {
+    c.style.border = '2px solid var(--border)';
+    c.style.background = '';
+  });
+  el.style.border = '2px solid var(--primary)';
+  el.style.background = 'var(--accent)';
+  sessionDuration = mins;
+  basePrice = price;
+  document.getElementById('sumDuration').textContent = `${mins} دقيقة`;
+  document.getElementById('sumBasePrice').textContent = `${price} ريال`;
+  updateTotal();
+}
+
+function selectTime(el) {
+  document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedTime = el.textContent;
+  document.getElementById('sumTime').textContent = selectedTime;
+}
+
+function selectPayment(el) {
+  document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('cardForm').style.display = el.querySelector('span').textContent.includes('بطاقة') ? 'block' : 'none';
+}
+
+function updateTotal() {
+  const discount = 150; // First session discount
+  const platformFee = 10;
+  const total = Math.max(0, basePrice + platformFee - discount);
+  document.getElementById('sumTotal').textContent = `${total} ريال`;
+}
+
+function formatCard(input) {
+  let val = input.value.replace(/\s/g,'').replace(/[^0-9]/g,'');
+  val = val.match(/.{1,4}/g)?.join(' ') || val;
+  input.value = val;
+}
+
+function formatExpiry(input) {
+  let val = input.value.replace(/[^0-9]/g,'');
+  if (val.length >= 2) val = val.substring(0,2) + '/' + val.substring(2);
+  input.value = val;
+}
+
+function confirmBooking() {
+  if (!selectedDate || !selectedTime) {
+    showToast('يرجى اختيار التاريخ والوقت أولاً', 'warning');
+    return;
+  }
+  const btn = event.target;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-left:8px;"></i>جارٍ معالجة الحجز...';
+  btn.disabled = true;
+  setTimeout(() => {
+    const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+    const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    document.getElementById('confirmDate').textContent = `${days[selectedDate.getDay()]} ${selectedDate.getDate()} ${months[selectedDate.getMonth()]} ${selectedTime}`;
+    document.getElementById('successOverlay').style.display = 'flex';
+  }, 2000);
+}
+
+// Inject toast function check
+function showToast(msg, type) {
+  if (window.showToast) window.showToast(msg, type);
+  else alert(msg);
+}
+</script>
+</body>
+</html>

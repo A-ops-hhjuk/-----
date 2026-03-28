@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المدونة والمقالات | منصة صفحة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .blog-hero-card { background:white; border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-md); border:1px solid var(--border); margin-bottom:32px; display:grid; grid-template-columns:1fr 1fr; }
+    .blog-hero-img { background:linear-gradient(135deg,var(--primary),var(--secondary)); min-height:320px; display:flex; align-items:center; justify-content:center; font-size:7rem; }
+    .blog-hero-content { padding:40px; display:flex; flex-direction:column; justify-content:center; }
+    .blog-category-tag { display:inline-block; background:var(--primary); color:white; font-size:0.75rem; font-weight:700; padding:4px 12px; border-radius:50px; margin-bottom:14px; }
+    .blog-hero-content h2 { font-size:1.6rem; margin-bottom:12px; line-height:1.4; }
+    .blog-hero-content p { font-size:0.9rem; color:var(--text-medium); margin-bottom:20px; }
+    .blog-author { display:flex; align-items:center; gap:10px; }
+    .author-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--secondary)); display:flex; align-items:center; justify-content:center; color:white; font-size:0.8rem; font-weight:700; }
+    .author-info strong { display:block; font-size:0.85rem; }
+    .author-info span { font-size:0.75rem; color:var(--text-light); }
+    
+    .blog-filter { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:28px; }
+    .blog-filter-btn { padding:8px 18px; border-radius:50px; font-size:0.85rem; font-weight:600; border:1.5px solid var(--border); background:white; color:var(--text-medium); cursor:pointer; transition:var(--transition); font-family:var(--font-main); }
+    .blog-filter-btn.active, .blog-filter-btn:hover { background:var(--primary); color:white; border-color:var(--primary); }
+    
+    .blog-grid-main { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+    .blog-card-new { background:white; border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border); transition:var(--transition); }
+    .blog-card-new:hover { transform:translateY(-4px); box-shadow:var(--shadow-md); }
+    .bcard-img { height:180px; display:flex; align-items:center; justify-content:center; font-size:3rem; position:relative; }
+    .bcard-cat { position:absolute; bottom:10px; right:10px; color:white; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:50px; }
+    .bcard-body { padding:20px; }
+    .bcard-meta { display:flex; align-items:center; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
+    .bcard-date, .bcard-read { font-size:0.75rem; color:var(--text-light); display:flex; align-items:center; gap:4px; }
+    .bcard-title { font-size:0.95rem; font-weight:700; margin-bottom:8px; line-height:1.5; }
+    .bcard-excerpt { font-size:0.82rem; color:var(--text-medium); line-height:1.7; }
+    .bcard-footer { padding:12px 20px; border-top:1px solid var(--bg-light); display:flex; align-items:center; justify-content:space-between; }
+    .bcard-author { display:flex; align-items:center; gap:8px; font-size:0.78rem; color:var(--text-light); }
+    .bcard-author-av { width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--secondary)); display:flex; align-items:center; justify-content:center; color:white; font-size:0.6rem; font-weight:700; }
+    .bcard-read-link { font-size:0.8rem; font-weight:700; color:var(--primary); display:flex; align-items:center; gap:4px; }
+    .bcard-read-link:hover { gap:8px; }
+
+    .sidebar-card { background:white; border-radius:var(--radius-md); border:1px solid var(--border); padding:20px; margin-bottom:20px; }
+    .sidebar-card h4 { font-size:0.9rem; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+    .popular-post { display:flex; gap:12px; padding:10px 0; border-bottom:1px solid var(--bg-light); }
+    .popular-post:last-child { border-bottom:none; }
+    .pop-num { width:28px; height:28px; border-radius:6px; background:var(--accent); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0; }
+    .pop-title { font-size:0.83rem; font-weight:600; line-height:1.4; color:var(--text-dark); }
+    .pop-meta { font-size:0.72rem; color:var(--text-light); margin-top:3px; }
+
+    .newsletter-box { background:linear-gradient(135deg,var(--primary),var(--secondary)); border-radius:var(--radius-md); padding:24px; color:white; }
+    .newsletter-box h4 { color:white; margin-bottom:8px; }
+    .newsletter-box p { font-size:0.82rem; color:rgba(255,255,255,0.8); margin-bottom:16px; }
+    .newsletter-input { display:flex; flex-direction:column; gap:8px; }
+    .newsletter-input input { padding:10px 14px; border-radius:8px; border:none; font-family:var(--font-main); font-size:0.85rem; direction:rtl; }
+    .newsletter-input button { padding:10px; background:rgba(255,255,255,0.2); color:white; border:1px solid rgba(255,255,255,0.3); border-radius:8px; font-weight:700; cursor:pointer; font-family:var(--font-main); transition:var(--transition); }
+    .newsletter-input button:hover { background:rgba(255,255,255,0.3); }
+
+    @media (max-width:991px) { .blog-grid-main { grid-template-columns:1fr 1fr; } .blog-hero-card { grid-template-columns:1fr; } .blog-hero-img { min-height:180px; } }
+    @media (max-width:768px) { .blog-grid-main { grid-template-columns:1fr; } .blog-hero-content{padding-inline: 15px;}}
+  </style>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="page-hero">
+  <div class="container-custom">
+    <div class="page-hero-content">
+      <div class="breadcrumb-custom">
+        <a href="index.html">الرئيسية</a>
+        <span class="breadcrumb-sep"><i class="fas fa-chevron-left"></i></span>
+        <span>المدونة</span>
+      </div>
+      <h1 style="font-size:1.8rem;margin-bottom:8px;">المدونة و<span style="color:var(--primary);">الموارد</span></h1>
+      <p style="font-size:0.9rem;color:var(--text-medium);">مقالات متخصصة في الصحة النفسية للعاملين في القطاع الإنساني</p>
+    </div>
+  </div>
+</div>
+
+<section style="padding:48px 0 80px;background:var(--bg-light);">
+  <div class="container-custom">
+    <div class="container-custom-blog">
+      <!-- Main Content -->
+      <div style="flex:1;">
+        <!-- Featured Article -->
+        <div class="blog-hero-card">
+          <div class="blog-hero-img">🔥</div>
+          <div class="blog-hero-content">
+            <span class="blog-category-tag">الاحتراق الوظيفي</span>
+            <h2 id="article-1">الاحتراق الوظيفي في العمل الإنساني: دليل شامل للتعرف والتعافي</h2>
+            <p>يعاني العاملون في القطاع الإنساني من معدلات احتراق وظيفي تفوق معظم المهن الأخرى. اكتشف الأعراض المبكرة والاستراتيجيات العلمية المجربة للتعافي والوقاية.</p>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+              <div class="blog-author">
+                <div class="author-avatar">د.م</div>
+                <div class="author-info">
+                  <strong>د. محمد الخليل</strong>
+                  <span>١٥ مارس ٢٠٢٥ • ٨ دقائق</span>
+                </div>
+              </div>
+              <a href="#" class="btn-primary-custom" style="padding:10px 20px;font-size:0.88rem;">
+                اقرأ المقال <i class="fas fa-arrow-left"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="blog-filter">
+          <button class="blog-filter-btn active" onclick="filterBlog(this,'all')">الكل</button>
+          <button class="blog-filter-btn" onclick="filterBlog(this,'burnout')">الاحتراق الوظيفي</button>
+          <button class="blog-filter-btn" onclick="filterBlog(this,'trauma')">الصدمات النفسية</button>
+          <button class="blog-filter-btn" onclick="filterBlog(this,'resilience')">المرونة النفسية</button>
+          <button class="blog-filter-btn" onclick="filterBlog(this,'leadership')">القيادة</button>
+          <button class="blog-filter-btn" onclick="filterBlog(this,'tools')">أدوات وتقنيات</button>
+        </div>
+
+        <!-- Articles Grid -->
+        <div class="blog-grid-main" id="blogGrid">
+          
+          <div class="blog-card-new" data-cat="resilience">
+            <div class="bcard-img" style="background:linear-gradient(135deg,var(--accent-green),var(--accent));">
+              🧘
+              <span class="bcard-cat" style="background:var(--secondary);">المرونة النفسية</span>
+            </div>
+            <div class="bcard-body">
+              <div class="bcard-meta">
+                <span class="bcard-date"><i class="fas fa-calendar"></i>٨ مارس ٢٠٢٥</span>
+                <span class="bcard-read"><i class="fas fa-clock"></i>٧ دقائق</span>
+              </div>
+              <h3 class="bcard-title" id="article-2">٥ استراتيجيات علمية لبناء المرونة النفسية</h3>
+              <p class="bcard-excerpt">تعرف على أحدث الأبحاث العلمية حول تعزيز القدرة على التكيف والتعافي في بيئات العمل الإنساني الصعبة...</p>
+            </div>
+            <div class="bcard-footer">
+              <div class="bcard-author"><div class="bcard-author-av">د.ن</div>د. نور الحسيني</div>
+              <a href="#" class="bcard-read-link">اقرأ <i class="fas fa-arrow-left"></i></a>
+            </div>
+          </div>
+
+          <div class="blog-card-new" data-cat="leadership">
+            <div class="bcard-img" style="background:linear-gradient(135deg,var(--accent),#EBF3F7);">
+              👥
+              <span class="bcard-cat" style="background:var(--primary);">القيادة</span>
+            </div>
+            <div class="bcard-body">
+              <div class="bcard-meta">
+                <span class="bcard-date"><i class="fas fa-calendar"></i>١ مارس ٢٠٢٥</span>
+                <span class="bcard-read"><i class="fas fa-clock"></i>٦ دقائق</span>
+              </div>
+              <h3 class="bcard-title" id="article-3">دور القائد في دعم صحة فريقه نفسياً</h3>
+              <p class="bcard-excerpt">كيف يخلق القادة الفعّالون في المنظمات الإنسانية بيئة عمل داعمة وآمنة نفسياً لموظفيهم؟</p>
+            </div>
+            <div class="bcard-footer">
+              <div class="bcard-author"><div class="bcard-author-av">د.ف</div>د. فيصل العمر</div>
+              <a href="#" class="bcard-read-link">اقرأ <i class="fas fa-arrow-left"></i></a>
+            </div>
+          </div>
+
+          <div class="blog-card-new" data-cat="trauma">
+            <div class="bcard-img" style="background:linear-gradient(135deg,#FFF0F4,var(--accent));">
+              💙
+              <span class="bcard-cat" style="background:#C04F7A;">الصدمات</span>
+            </div>
+            <div class="bcard-body">
+              <div class="bcard-meta">
+                <span class="bcard-date"><i class="fas fa-calendar"></i>٢٢ فبراير ٢٠٢٥</span>
+                <span class="bcard-read"><i class="fas fa-clock"></i>٩ دقائق</span>
+              </div>
+              <h3 class="bcard-title">الصدمة الإنابية: حين تتأثر بمعاناة الآخرين</h3>
+              <p class="bcard-excerpt">فهم ظاهرة الصدمة الإنابية وعلاقتها بالرحمة المفرطة لدى العاملين في مجال الإغاثة الإنسانية...</p>
+            </div>
+            <div class="bcard-footer">
+              <div class="bcard-author"><div class="bcard-author-av">د.س</div>د. سارة الأحمدي</div>
+              <a href="#" class="bcard-read-link">اقرأ <i class="fas fa-arrow-left"></i></a>
+            </div>
+          </div>
+
+          <div class="blog-card-new" data-cat="tools">
+            <div class="bcard-img" style="background:linear-gradient(135deg,var(--accent-green),#E0F7E8);">
+              🛠️
+              <span class="bcard-cat" style="background:var(--secondary);">أدوات</span>
+            </div>
+            <div class="bcard-body">
+              <div class="bcard-meta">
+                <span class="bcard-date"><i class="fas fa-calendar"></i>١٥ فبراير ٢٠٢٥</span>
+                <span class="bcard-read"><i class="fas fa-clock"></i>٥ دقائق</span>
+              </div>
+              <h3 class="bcard-title">تقنية اليقظة الذهنية: دليل البداية للمبتدئين</h3>
+              <p class="bcard-excerpt">خطوات عملية وبسيطة لبدء ممارسة اليقظة الذهنية حتى لو كنت مشغولاً ولا وقت لديك...</p>
+            </div>
+            <div class="bcard-footer">
+              <div class="bcard-author"><div class="bcard-author-av">د.خ</div>د. خالد المطيري</div>
+              <a href="#" class="bcard-read-link">اقرأ <i class="fas fa-arrow-left"></i></a>
+            </div>
+          </div>
+
+          <div class="blog-card-new" data-cat="burnout">
+            <div class="bcard-img" style="background:linear-gradient(135deg,#FFF3E0,var(--accent));">
+              ⚡
+              <span class="bcard-cat" style="background:var(--warning);">الاحتراق الوظيفي</span>
+            </div>
+            <div class="bcard-body">
+              <div class="bcard-meta">
+                <span class="bcard-date"><i class="fas fa-calendar"></i>٨ فبراير ٢٠٢٥</span>
+                <span class="bcard-read"><i class="fas fa-clock"></i>٦ دقائق</span>
+              </div>
+              <h3 class="bcard-title">كيف تضع حدوداً صحية في العمل دون ذنب؟</h3>
+              <p class="bcard-excerpt">استراتيجيات عملية لتعلم قول "لا" في العمل الإنساني دون الشعور بالذنب أو التأثير على رسالتك...</p>
+            </div>
+            <div class="bcard-footer">
+              <div class="bcard-author"><div class="bcard-author-av">د.ل</div>د. ليلى بكر</div>
+              <a href="#" class="bcard-read-link">اقرأ <i class="fas fa-arrow-left"></i></a>
+            </div>
+          </div>
+
+          <div class="blog-card-new" data-cat="resilience">
+            <div class="bcard-img" style="background:linear-gradient(135deg,var(--accent),var(--accent-green));">
+              🌱
+              <span class="bcard-cat" style="background:var(--primary);">النمو</span>
+            </div>
+            <div class="bcard-body">
+              <div class="bcard-meta">
+                <span class="bcard-date"><i class="fas fa-calendar"></i>١ فبراير ٢٠٢٥</span>
+                <span class="bcard-read"><i class="fas fa-clock"></i>٨ دقائق</span>
+              </div>
+              <h3 class="bcard-title">النمو ما بعد الصدمة: كيف تخرج أقوى مما دخلت؟</h3>
+              <p class="bcard-excerpt">قصص ملهمة وإرشادات علمية عن كيفية تحويل الشدائد والصدمات إلى نقطة قوة وانطلاق جديد...</p>
+            </div>
+            <div class="bcard-footer">
+              <div class="bcard-author"><div class="bcard-author-av">د.م</div>د. منى الشريف</div>
+              <a href="#" class="bcard-read-link">اقرأ <i class="fas fa-arrow-left"></i></a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Load More -->
+        <div style="text-align:center;margin-top:40px;">
+          <button onclick="loadMore()" style="padding:14px 40px;background:white;border:2px solid var(--border);border-radius:50px;font-weight:700;font-size:0.9rem;color:var(--primary);cursor:pointer;font-family:Cairo,sans-serif;transition:var(--transition);" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='white'">
+            <i class="fas fa-plus" style="margin-left:8px;"></i>تحميل المزيد من المقالات
+          </button>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div style="width:280px;flex-shrink:0;">
+        <!-- Search -->
+        <div class="sidebar-card">
+          <div style="position:relative;">
+            <i class="fas fa-search" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-light);font-size:0.9rem;"></i>
+            <input type="text" placeholder="ابحث في المقالات..." style="width:100%;padding:10px 38px 10px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:Cairo,sans-serif;font-size:0.85rem;direction:rtl;" />
+          </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="sidebar-card">
+          <h4><i class="fas fa-tags" style="color:var(--primary);"></i>التصنيفات</h4>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bg-light);">
+              <a href="#" style="font-size:0.85rem;color:var(--text-medium);font-weight:500;"><i class="fas fa-fire" style="color:var(--danger);margin-left:6px;font-size:0.8rem;"></i>الاحتراق الوظيفي</a>
+              <span style="background:var(--accent);color:var(--primary);font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:50px;">14</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bg-light);">
+              <a href="#" style="font-size:0.85rem;color:var(--text-medium);font-weight:500;"><i class="fas fa-brain" style="color:var(--primary);margin-left:6px;font-size:0.8rem;"></i>الصدمات النفسية</a>
+              <span style="background:var(--accent);color:var(--primary);font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:50px;">9</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bg-light);">
+              <a href="#" style="font-size:0.85rem;color:var(--text-medium);font-weight:500;"><i class="fas fa-seedling" style="color:var(--secondary);margin-left:6px;font-size:0.8rem;"></i>المرونة النفسية</a>
+              <span style="background:var(--accent);color:var(--primary);font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:50px;">12</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bg-light);">
+              <a href="#" style="font-size:0.85rem;color:var(--text-medium);font-weight:500;"><i class="fas fa-users" style="color:var(--primary);margin-left:6px;font-size:0.8rem;"></i>القيادة والفرق</a>
+              <span style="background:var(--accent);color:var(--primary);font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:50px;">8</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;">
+              <a href="#" style="font-size:0.85rem;color:var(--text-medium);font-weight:500;"><i class="fas fa-tools" style="color:var(--secondary);margin-left:6px;font-size:0.8rem;"></i>أدوات وتقنيات</a>
+              <span style="background:var(--accent);color:var(--primary);font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:50px;">6</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Popular Posts -->
+        <div class="sidebar-card">
+          <h4><i class="fas fa-fire" style="color:var(--danger);"></i>الأكثر قراءة</h4>
+          <div class="popular-post">
+            <div class="pop-num">١</div>
+            <div>
+              <div class="pop-title">علامات الاحتراق الوظيفي الـ١٢ التي تجاهلتها</div>
+              <div class="pop-meta">٤,٢٠٠ قراءة</div>
+            </div>
+          </div>
+          <div class="popular-post">
+            <div class="pop-num">٢</div>
+            <div>
+              <div class="pop-title">الصدمة الإنابية: هل تعاني منها؟</div>
+              <div class="pop-meta">٣,٨٠٠ قراءة</div>
+            </div>
+          </div>
+          <div class="popular-post">
+            <div class="pop-num">٣</div>
+            <div>
+              <div class="pop-title">كيف تطلب المساعدة دون شعور بالضعف</div>
+              <div class="pop-meta">٢,٩٠٠ قراءة</div>
+            </div>
+          </div>
+          <div class="popular-post">
+            <div class="pop-num">٤</div>
+            <div>
+              <div class="pop-title">٧ تقنيات للهدوء في خضم الأزمات</div>
+              <div class="pop-meta">٢,٤٠٠ قراءة</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="newsletter-box">
+          <h4>النشرة الأسبوعية 📬</h4>
+          <p>مقال واحد كل أسبوع مباشرة إلى بريدك عن الصحة النفسية في العمل الإنساني</p>
+          <div class="newsletter-input">
+            <input type="email" placeholder="بريدك الإلكتروني" />
+            <button onclick="subscribeNewsletter()">
+              <i class="fas fa-paper-plane" style="margin-left:6px;"></i>اشترك مجاناً
+            </button>
+          </div>
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:10px;"><i class="fas fa-lock" style="margin-left:4px;"></i>لن نشارك بريدك مع أي جهة</div>
+        </div>
+
+        <!-- Assessment CTA -->
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-md);padding:20px;text-align:center;margin-top:20px;">
+          <div style="font-size:2rem;margin-bottom:10px;">🧠</div>
+          <h4 style="font-size:0.9rem;margin-bottom:8px;">هل صحتك النفسية بخير؟</h4>
+          <p style="font-size:0.8rem;color:var(--text-medium);margin-bottom:14px;">أجرِ التقييم المجاني ومعرف مستوى رفاهيتك النفسية</p>
+          <a href="assessment.html" class="btn-primary-custom" style="width:100%;justify-content:center;font-size:0.85rem;padding:10px;">
+            <i class="fas fa-brain"></i> ابدأ التقييم
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+<script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/js/all.min.js" defer></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+function filterBlog(btn, cat) {
+  document.querySelectorAll('.blog-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const cards = document.querySelectorAll('.blog-card-new');
+  cards.forEach(card => {
+    const cardCat = card.getAttribute('data-cat');
+    card.style.display = (cat === 'all' || cardCat === cat) ? '' : 'none';
+  });
+}
+
+function loadMore() {
+  if (window.showToast) window.showToast('جارٍ تحميل المزيد من المقالات...', 'info');
+  // Simulate loading
+  setTimeout(() => {
+    if (window.showToast) window.showToast('تم تحميل ٦ مقالات إضافية', 'success');
+  }, 1200);
+}
+
+function subscribeNewsletter() {
+  const input = event.target.closest('.newsletter-input').querySelector('input');
+  if (!input.value) { alert('يرجى إدخال بريدك الإلكتروني'); return; }
+  if (window.showToast) window.showToast('تم اشتراكك بنجاح! 🎉', 'success');
+  else alert('تم اشتراكك بنجاح!');
+  input.value = '';
+}
+</script>
+</body>
+</html>

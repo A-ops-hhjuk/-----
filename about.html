@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>من نحن | منصة صفحة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .mission-card { background:white; border-radius:var(--radius-lg); padding:48px; border:1px solid var(--border); box-shadow:var(--shadow-sm); }
+    .mission-quote { font-size:1.15rem; color:var(--text-medium); font-style:italic; border-right:4px solid var(--primary); padding-right:20px; margin:24px 0; line-height:1.8; }
+    
+    .value-card { background:white; border-radius:var(--radius-md); padding:28px; border:1px solid var(--border); text-align:center; transition:var(--transition); }
+    .value-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--primary-light); }
+    .value-icon { width:70px; height:70px; border-radius:50%; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; }
+    .about-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+    .team-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
+    .team-card { background:white; border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border); text-align:center; transition:var(--transition); }
+    .team-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-md); }
+    .team-top { padding:32px 20px 20px; background:linear-gradient(135deg,var(--accent),var(--accent-green)); }
+    .team-avatar { width:80px; height:80px; border-radius:50%; margin:0 auto 14px; display:flex; align-items:center; justify-content:center; color:white; font-size:1.6rem; font-weight:700; border:3px solid white; }
+    .team-card-body { padding:16px 20px 20px; }
+    .team-name { font-weight:800; font-size:1rem; margin-bottom:4px; }
+    .team-role { font-size:0.8rem; color:var(--primary); font-weight:600; margin-bottom:8px; }
+    .team-bio { font-size:0.78rem; color:var(--text-medium); line-height:1.6; margin-bottom:12px; }
+    .team-social { display:flex; gap:8px; justify-content:center; }
+    .team-social a { width:30px; height:30px; border-radius:50%; background:var(--bg-light); display:flex; align-items:center; justify-content:center; font-size:0.75rem; color:var(--text-medium); transition:var(--transition); }
+    .team-social a:hover { background:var(--primary); color:white; }
+    
+    .milestone { display:flex; gap:20px; margin-bottom:32px; }
+    .milestone-line { display:flex; flex-direction:column; align-items:center; }
+    .milestone-dot { width:16px; height:16px; border-radius:50%; border:3px solid var(--primary); background:white; flex-shrink:0; }
+    .milestone-vline { flex:1; width:2px; background:var(--border); margin:4px 0; }
+    .milestone-content { padding-bottom:8px; }
+    .milestone-year { font-size:0.78rem; font-weight:700; color:var(--primary); }
+    .milestone-title { font-size:0.95rem; font-weight:700; margin-bottom:4px; }
+    .milestone-desc { font-size:0.83rem; color:var(--text-medium); }
+    
+    .about-Timeline{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:flex-start;}
+    .partner-logo { width:120px; height:60px; background:var(--bg-light); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; color:var(--text-light); border:1px solid var(--border); transition:var(--transition); }
+    .partner-logo:hover { border-color:var(--primary); color:var(--primary); background:var(--accent); }
+    
+    @media (max-width:991px) { .team-grid { grid-template-columns:1fr 1fr; } }
+    @media (max-width:800px) { .about-cards{display: flex; flex-wrap: wrap;} .about-cards .value-card{width: 100%;} .about-Timeline{display: flex;flex-direction: column;}}
+    @media (max-width:576px) { .team-grid { grid-template-columns:1fr; } .mission-card { padding:17px; } }
+  </style>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<!-- Hero -->
+<section style="background:linear-gradient(145deg,var(--primary-dark) 0%,var(--primary) 50%,var(--secondary-dark) 100%);padding:80px 0;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.04%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+  <div class="container-custom" style="position:relative;z-index:2;text-align:center;">
+    <div style="background:rgba(255,255,255,0.15);color:white;display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:50px;font-size:0.85rem;font-weight:600;margin-bottom:20px;border:1px solid rgba(255,255,255,0.2);">
+      <i class="fas fa-heart"></i>قصتنا
+    </div>
+    <h1 style="color:white;font-size:2.5rem;margin-bottom:16px;">من نحن؟</h1>
+    <p style="color:rgba(255,255,255,0.85);font-size:1.05rem;max-width:600px;margin:0 auto;">منصة صفحة وُلدت من قلب العمل الإنساني، لأن الذين يحملون همَّ الآخرين يستحقون من يحمل همَّهم.</p>
+  </div>
+</section>
+
+<!-- Mission -->
+<section style="padding:80px 0;">
+  <div class="container-custom">
+    <div class="container-custom-about">
+      <div class="mission-card">
+        <div class="section-badge"><i class="fas fa-bullseye"></i>مهمتنا</div>
+        <h2 style="margin-bottom:16px;">نؤمن أن <span style="color:var(--primary);">المساعِد</span> يحتاج مساعدة أيضاً</h2>
+        <div class="mission-quote">
+          "رأينا كيف يُعطي العاملون في الحقل الإنساني أرواحهم لخدمة الآخرين، دون أن يجد أحد الوقت ليسألهم: وأنت، كيف حالك؟"
+        </div>
+        <p style="margin-bottom:16px;font-size:0.92rem;color:var(--text-medium);">أُسِّست منصة صفحة عام ٢٠٢٣ بهدف واحد: توفير بيئة آمنة وموثوقة يحصل فيها العاملون في القطاع الإنساني على الدعم النفسي والمهني الذي يحتاجونه.</p>
+        <p style="font-size:0.92rem;color:var(--text-medium);">نؤمن أن الصحة النفسية ليست رفاهية، بل ضرورة تمكّن العاملين من مواصلة رسالتهم الإنسانية بأفضل صورة ممكنة.</p>
+        <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="auth.html?tab=register" class="btn-primary-custom">
+            <i class="fas fa-rocket"></i>انضم إلينا اليوم
+          </a>
+          <a href="contact.html" class="btn-outline-custom">
+            <i class="fas fa-envelope"></i>تواصل معنا
+          </a>
+        </div>
+      </div>
+      <div style="width: 100%;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:var(--radius-md);padding:24px;color:white;text-align:center;">
+            <div style="font-size:2.5rem;font-weight:900;margin-bottom:4px;">٢٠٢٣</div>
+            <div style="font-size:0.82rem;color:rgba(255,255,255,0.8);">سنة التأسيس</div>
+          </div>
+          <div style="background:linear-gradient(135deg,var(--secondary),var(--secondary-dark));border-radius:var(--radius-md);padding:24px;color:white;text-align:center;">
+            <div style="font-size:2.5rem;font-weight:900;margin-bottom:4px;">15+</div>
+            <div style="font-size:0.82rem;color:rgba(255,255,255,0.8);">دولة نخدمها</div>
+          </div>
+        </div>
+        <div style="background:var(--bg-light);border-radius:var(--radius-md);padding:28px;">
+          <h4 style="margin-bottom:20px;">أرقام تحكي قصتنا:</h4>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:6px;">
+                <span style="font-weight:600;">معدل رضا المستخدمين</span>
+                <span style="font-weight:800;color:var(--primary);">98%</span>
+              </div>
+              <div style="height:8px;background:white;border-radius:8px;overflow:hidden;"><div style="height:100%;width:98%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:8px;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:6px;">
+                <span style="font-weight:600;">تحسن بعد ٥ جلسات</span>
+                <span style="font-weight:800;color:var(--secondary);">87%</span>
+              </div>
+              <div style="height:8px;background:white;border-radius:8px;overflow:hidden;"><div style="height:100%;width:87%;background:linear-gradient(90deg,var(--secondary),var(--primary));border-radius:8px;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:6px;">
+                <span style="font-weight:600;">انخفاض الاحتراق الوظيفي</span>
+                <span style="font-weight:800;color:var(--primary);">73%</span>
+              </div>
+              <div style="height:8px;background:white;border-radius:8px;overflow:hidden;"><div style="height:100%;width:73%;background:linear-gradient(90deg,var(--primary-light),var(--secondary));border-radius:8px;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Values -->
+<section style="padding:80px 0;background:var(--bg-light);">
+  <div class="container-custom">
+    <div style="text-align:center;max-width:640px;margin:0 auto 56px;">
+      <div class="section-badge green"><i class="fas fa-heart"></i>قيمنا</div>
+      <h2 class="section-title">مبادئنا الأساسية</h2>
+      <p class="section-subtitle" style="margin:0 auto;">كل قرار نتخذه يرتكز على هذه القيم الجوهرية</p>
+    </div>
+    <div class="about-cards">
+      <div class="value-card">
+        <div class="value-icon" style="background:var(--accent);"><i class="fas fa-shield-alt" style="color:var(--primary);"></i></div>
+        <h4 style="margin-bottom:10px;">السرية والثقة</h4>
+        <p style="font-size:0.85rem;color:var(--text-medium);">كل جلسة ومعلومة محمية بأعلى معايير الأمان والتشفير</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon" style="background:var(--accent-green);"><i class="fas fa-hands-helping" style="color:var(--secondary);"></i></div>
+        <h4 style="margin-bottom:10px;">التعاطف والإنسانية</h4>
+        <p style="font-size:0.85rem;color:var(--text-medium);">نفهم تحديات العمل الإنساني لأننا نعيش هذا العالم بأنفسنا</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon" style="background:var(--accent);"><i class="fas fa-certificate" style="color:var(--primary);"></i></div>
+        <h4 style="margin-bottom:10px;">الاحترافية والكفاءة</h4>
+        <p style="font-size:0.85rem;color:var(--text-medium);">فريق من المختصين المعتمدين دولياً بأعلى المعايير المهنية</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon" style="background:var(--accent-green);"><i class="fas fa-globe" style="color:var(--secondary);"></i></div>
+        <h4 style="margin-bottom:10px;">الشمولية والتنوع</h4>
+        <p style="font-size:0.85rem;color:var(--text-medium);">نخدم جميع العاملين في القطاع الإنساني بغض النظر عن خلفياتهم</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section style="padding:80px 0;" id="team">
+  <div class="container-custom">
+    <div style="text-align:center;max-width:640px;margin:0 auto 56px;">
+      <div class="section-badge"><i class="fas fa-users"></i>فريقنا</div>
+      <h2 class="section-title">المؤسسون <span>والفريق</span> القيادي</h2>
+      <p class="section-subtitle" style="margin:0 auto;">فريق متنوع يجمع بين الخبرة الإنسانية والتخصص النفسي والتقني</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-top">
+          <div class="team-avatar" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));">ك.ع</div>
+          <div class="team-name">كريم العمري</div>
+          <div class="team-role">المؤسس والرئيس التنفيذي</div>
+        </div>
+        <div class="team-card-body">
+          <div class="team-bio">عمل ١٢ عاماً في منظمات إنسانية دولية، وعاش تجربة الاحتراق الوظيفي شخصياً مما دفعه لتأسيس صفحة.</div>
+          <div class="team-social">
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-top">
+          <div class="team-avatar" style="background:linear-gradient(135deg,var(--secondary),var(--secondary-dark));">ن.ب</div>
+          <div class="team-name">د. نجوى البسام</div>
+          <div class="team-role">المديرة الطبية</div>
+        </div>
+        <div class="team-card-body">
+          <div class="team-bio">دكتوراه في علم النفس الإكلينيكي من جامعة لندن. ١٥ عاماً من الخبرة في علاج الصدمات وتأهيل العاملين في الأزمات.</div>
+          <div class="team-social">
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fas fa-globe"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-top">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#5B7EC9,var(--primary));">م.ه</div>
+          <div class="team-name">محمد هاني</div>
+          <div class="team-role">المدير التقني</div>
+        </div>
+        <div class="team-card-body">
+          <div class="team-bio">متخصص في الأمن السيبراني وهندسة البرمجيات. يضمن سرية وأمان جميع البيانات والجلسات على المنصة.</div>
+          <div class="team-social">
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-top">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#E07B7B,#C04F7A);">ر.ع</div>
+          <div class="team-name">رانيا العجمي</div>
+          <div class="team-role">مديرة الشراكات</div>
+        </div>
+        <div class="team-card-body">
+          <div class="team-bio">خبرة ١٠ سنوات في بناء شراكات مع المنظمات الدولية. تقود فريق التواصل مع المنظمات والمؤسسات الإنسانية.</div>
+          <div class="team-social">
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Timeline -->
+<section style="padding:80px 0;background:var(--bg-light);">
+  <div class="container-custom">
+    <div class="about-Timeline">
+      <div>
+        <div class="section-badge"><i class="fas fa-route"></i>مسيرتنا</div>
+        <h2 class="section-title" style="margin-bottom:40px;">من الفكرة <span>إلى الواقع</span></h2>
+        <div>
+          <div class="milestone">
+            <div class="milestone-line">
+              <div class="milestone-dot" style="background:var(--primary);border-color:var(--primary);"></div>
+              <div class="milestone-vline"></div>
+            </div>
+            <div class="milestone-content">
+              <div class="milestone-year">٢٠٢٢</div>
+              <div class="milestone-title">الفكرة والبحث</div>
+              <div class="milestone-desc">بدأت الفكرة بعد تجربة شخصية. قضينا ٨ أشهر في البحث والدراسة مع ١٠٠+ عامل إنساني لفهم احتياجاتهم.</div>
+            </div>
+          </div>
+          <div class="milestone">
+            <div class="milestone-line">
+              <div class="milestone-dot" style="background:var(--secondary);border-color:var(--secondary);"></div>
+              <div class="milestone-vline"></div>
+            </div>
+            <div class="milestone-content">
+              <div class="milestone-year">أوائل ٢٠٢٣</div>
+              <div class="milestone-title">التأسيس والإطلاق التجريبي</div>
+              <div class="milestone-desc">تأسست المنصة رسمياً وأُطلق الإصدار التجريبي بـ١٢ مستشاراً و٢٠٠ مستخدم.</div>
+            </div>
+          </div>
+          <div class="milestone">
+            <div class="milestone-line">
+              <div class="milestone-dot" style="background:var(--primary);border-color:var(--primary);"></div>
+              <div class="milestone-vline"></div>
+            </div>
+            <div class="milestone-content">
+              <div class="milestone-year">منتصف ٢٠٢٣</div>
+              <div class="milestone-title">الانطلاق الرسمي</div>
+              <div class="milestone-desc">إطلاق المنصة رسمياً مع باقة المنظمات. انضمام أول ٥ منظمات إنسانية دولية.</div>
+            </div>
+          </div>
+          <div class="milestone">
+            <div class="milestone-line">
+              <div class="milestone-dot" style="background:var(--secondary);border-color:var(--secondary);"></div>
+              <div class="milestone-vline"></div>
+            </div>
+            <div class="milestone-content">
+              <div class="milestone-year">٢٠٢٤</div>
+              <div class="milestone-title">النمو والتوسع</div>
+              <div class="milestone-desc">تجاوزنا ٢٠٠٠ مستفيد، وتوسعنا لخدمة ١٥ دولة، وأضفنا التقييم الذكي ولوحات تحكم المنظمات.</div>
+            </div>
+          </div>
+          <div class="milestone">
+            <div class="milestone-line">
+              <div class="milestone-dot" style="background:var(--primary);border-color:var(--primary);"></div>
+            </div>
+            <div class="milestone-content">
+              <div class="milestone-year">٢٠٢٥</div>
+              <div class="milestone-title">اليوم والمستقبل</div>
+              <div class="milestone-desc">٢٤٠٠+ مستفيد، ٨٥+ مستشار، ٤٢+ منظمة شريكة. ونواصل النمو لخدمة كل من يحتاج الدعم.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Accreditations -->
+      <div>
+        <div class="section-badge green"><i class="fas fa-certificate"></i>الاعتمادات والجوائز</div>
+        <h2 class="section-title" style="margin-bottom:32px;">موثوق ومعتمد <span class="green">دولياً</span></h2>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;align-items:center;gap:16px;background:white;border-radius:var(--radius-md);padding:20px;border:1px solid var(--border);">
+            <div style="width:50px;height:50px;border-radius:var(--radius-sm);background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">🏆</div>
+            <div>
+              <div style="font-weight:700;font-size:0.92rem;margin-bottom:2px;">جائزة أفضل مبادرة للصحة النفسية</div>
+              <div style="font-size:0.78rem;color:var(--text-light);">المؤتمر العالمي للعمل الإنساني ٢٠٢٤</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;background:white;border-radius:var(--radius-md);padding:20px;border:1px solid var(--border);">
+            <div style="width:50px;height:50px;border-radius:var(--radius-sm);background:var(--accent-green);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">📜</div>
+            <div>
+              <div style="font-weight:700;font-size:0.92rem;margin-bottom:2px;">اعتماد APA للخدمات النفسية الرقمية</div>
+              <div style="font-size:0.78rem;color:var(--text-light);">الجمعية الأمريكية لعلم النفس</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;background:white;border-radius:var(--radius-md);padding:20px;border:1px solid var(--border);">
+            <div style="width:50px;height:50px;border-radius:var(--radius-sm);background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">🛡️</div>
+            <div>
+              <div style="font-weight:700;font-size:0.92rem;margin-bottom:2px;">شهادة ISO 27001 لأمن المعلومات</div>
+              <div style="font-size:0.78rem;color:var(--text-light);">أعلى معايير حماية البيانات</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;background:white;border-radius:var(--radius-md);padding:20px;border:1px solid var(--border);">
+            <div style="width:50px;height:50px;border-radius:var(--radius-sm);background:var(--accent-green);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">🤝</div>
+            <div>
+              <div style="font-weight:700;font-size:0.92rem;margin-bottom:2px;">شراكة استراتيجية مع UNHCR</div>
+              <div style="font-size:0.78rem;color:var(--text-light);">المفوضية السامية للأمم المتحدة لشؤون اللاجئين</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Partners -->
+<section style="padding:60px 0;background:white;border-top:1px solid var(--border);">
+  <div class="container-custom">
+    <div style="text-align:center;margin-bottom:36px;">
+      <h3 style="font-size:1.1rem;color:var(--text-light);font-weight:600;">شركاؤنا ومنظمات تثق بنا</h3>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
+      <div class="partner-logo">UNHCR</div>
+      <div class="partner-logo">WHO</div>
+      <div class="partner-logo">MSF</div>
+      <div class="partner-logo">ICRC</div>
+      <div class="partner-logo">UNICEF</div>
+      <div class="partner-logo">IRC</div>
+      <div class="partner-logo">WFP</div>
+      <div class="partner-logo">OCHA</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container-custom">
+    <div class="cta-content">
+      <h2>كن جزءاً من مجتمع <br>صفحة الإنساني</h2>
+      <p>انضم إلى آلاف العاملين الإنسانيين الذين يثقون بمنصة صفحة لدعم صحتهم النفسية</p>
+      <div class="cta-actions">
+        <a href="auth.html?tab=register" class="btn-white-custom btn-lg-custom">
+          <i class="fas fa-user-plus"></i>انضم الآن
+        </a>
+        <a href="contact.html" class="btn-outline-custom btn-lg-custom" style="border-color:rgba(255,255,255,0.5);color:white;">
+          <i class="fas fa-envelope"></i>تواصل معنا
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+<script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/js/all.min.js" defer></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
